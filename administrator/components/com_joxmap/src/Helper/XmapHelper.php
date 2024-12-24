@@ -1,27 +1,31 @@
 <?php
 /**
- * @version     $Id$
- * @copyright   Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 
-
+namespace JLTRY\Component\JoXmap\Administrator\Helper;
 // No direct access
 defined('_JEXEC') or die;
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Version as JVersion;
-use Joomla\CMS\HTML\Helpers\Sidebar as JHtmlSidebar;
-use Joomla\CMS\Language\Text as JText; 	 
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Version;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Language\Text;
 
 /**
  * Xmap component helper.
  *
- * @package     Xmap
- * @subpackage  com_xmap
+ * @package     JoXmap
+ * @subpackage  com_joxmap
  * @since       2.0
  */
-class XmapHelper
+class Xmap
 {
     /**
      * Configure the Linkbar.
@@ -30,34 +34,34 @@ class XmapHelper
      */
     public static function addSubmenu($vName)
     {
-        $version = new JVersion;
+        $version = new Version;
 
-        if (version_compare($version->getShortVersion(), '3.0.0', '<')) {
+        if (Version_compare($version->getShortVersion(), '3.0.0', '<')) {
             JSubMenuHelper::addEntry(
-                JText::_('Xmap_Submenu_Sitemaps'),
-                'index.php?option=com_xmap',
+                Text::_('Xmap_Submenu_Sitemaps'),
+                'index.php?option=com_joxmap',
                 $vName == 'sitemaps'
             );
             JSubMenuHelper::addEntry(
-                JText::_('Xmap_Submenu_Extensions'),
-                'index.php?option=com_plugins&view=plugins&filter_folder=xmap',
+                Text::_('Xmap_Submenu_Extensions'),
+                'index.php?option=com_plugins&view=plugins&filter_folder=joxmap',
                 $vName == 'extensions');
         } else {
-            JHtmlSidebar::addEntry(
-                JText::_('Xmap_Submenu_Sitemaps'),
-                'index.php?option=com_xmap',
+            SideBar::addEntry(
+                Text::_('Xmap_Submenu_Sitemaps'),
+                'index.php?option=com_joxmap',
                 $vName == 'sitemaps'
             );
-            JHtmlSidebar::addEntry(
-                JText::_('Xmap_Submenu_Extensions'),
-                'index.php?option=com_plugins&view=plugins&filter_folder=xmap',
+            SideBar::addEntry(
+                Text::_('Xmap_Submenu_Extensions'),
+                'index.php?option=com_plugins&view=plugins&filter_folder=joxmap',
                 $vName == 'extensions');
         }
     }
 	
 	public static function getpost() {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			return JFactory::getApplication()->input->getArray(array());
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			return Factory::getApplication()->input->getArray(array());
 		}
 		else {
 			return call_user_func_array('XmapHelper::get', ['post']);
@@ -65,11 +69,11 @@ class XmapHelper
 	}
 	
 	public static function get(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
 			if ($params[0] == 'post '){
-				return JFactory::getApplication()->input->getInputForRequestMethod('POST');
+				return Factory::getApplication()->input->getInputForRequestMethod('POST');
 			} else {
-				return call_user_func_array(array(JFactory::getApplication()->input, 'get'), $params);
+				return call_user_func_array(array(Factory::getApplication()->input, 'get'), $params);
 			}
 		}
 		else {
@@ -78,8 +82,8 @@ class XmapHelper
 	}
 	
 	public static function getVar(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getVar'), $params);
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			return call_user_func_array(array(Factory::getApplication()->input, 'getVar'), $params);
 		}
 		else {
 			return call_user_func_array('XmapHelper::getVar', $params);
@@ -88,8 +92,8 @@ class XmapHelper
 	
 
 	public static function setVar(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			call_user_func_array(array(JFactory::getApplication()->input, 'setVar'), $params);
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			call_user_func_array(array(Factory::getApplication()->input, 'setVar'), $params);
 		}
 		else {
 			call_user_func_array('XmapHelper::setVar', $params);
@@ -97,8 +101,8 @@ class XmapHelper
 	}
 
 	public static function getCmd(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getCmd'), $params);
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			return call_user_func_array(array(Factory::getApplication()->input, 'getCmd'), $params);
 		}
 		else {
 			return call_user_func_array('XmapHelper::getCmd', $params);
@@ -106,8 +110,8 @@ class XmapHelper
 	}
 
 	public static function getInt(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			$recordId = call_user_func_array(array(JFactory::getApplication()->input, 'getInt'), $params);
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			$recordId = call_user_func_array(array(Factory::getApplication()->input, 'getInt'), $params);
 		}
 		else {
 			$recordId	= (int)call_user_func_array('XmapHelper::getInt', $params);
@@ -116,16 +120,16 @@ class XmapHelper
 	
 	
 	public static function getBool(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getBool'), $params);
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			return call_user_func_array(array(Factory::getApplication()->input, 'getBool'), $params);
 		}
 		else {
 			return (int)call_user_func_array('XmapHelper::getBool', $params);
 		}
 	}
 	public static function getWord(...$params) {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getWord'), $params);
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
+			return call_user_func_array(array(Factory::getApplication()->input, 'getWord'), $params);
 		}
 		else {
 			return (int)call_user_func_array('XmapHelper::getWord', $params);
@@ -133,15 +137,15 @@ class XmapHelper
 	}
 	
 	public static function getURI() {
-		if (version_compare(JVERSION, '4.0', 'ge')){
+		if (Version_compare(Version::MAJOR_VERSION, '4.0', 'ge')){
 			return JUri::getInstance();
 		}
 		else {
-			return JFactory::getURI();
+			return Factory::getURI();
 		}
 	}
 	
 	public static function getShortVersion() {
-		return implode(".", array_slice(explode(".", JVERSION), 0,3));
+		return implode(".", array_slice(explode(".", Version), 0,3));
 	}
 }

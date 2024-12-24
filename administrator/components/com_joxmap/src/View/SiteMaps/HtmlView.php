@@ -6,22 +6,25 @@
  * @author      Guillermo Vargas (guille@vargas.co.cr)
  */
 
+namespace JLTRY\Component\JoXmap\Administrator\View\SiteMaps;
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
-use Joomla\CMS\Toolbar\ToolbarHelper as JToolbarHelper;
-use Joomla\CMS\Version as JVersion;
-use Joomla\CMS\Language\Text as JText; 	 
+use JLTRY\Component\JoXmap\Administrator\Helper\Xmap;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Version;
+use Joomla\CMS\Language\Text;
 
 /**
  * @package     Xmap
  * @subpackage  com_xmap
  * @since       2.0
  */
-class XmapViewSitemaps extends JViewLegacy
+class HtmlView extends BaseHtmlView
 {
     protected $state;
     protected $items;
@@ -33,23 +36,23 @@ class XmapViewSitemaps extends JViewLegacy
     public function display($tpl = null)
     {
         if ($this->getLayout() !== 'modal') {
-            XmapHelper::addSubmenu('sitemaps');
+            Xmap::addSubmenu('sitemaps');
         }
 
         $this->state      = $this->get('State');
         $this->items      = $this->get('Items');
         $this->pagination = $this->get('Pagination');
 
-        $version = new JVersion;
+        $version = new Version;
 
         $message = $this->get('ExtensionsMessage');
         if ( $message ) {
-            JFactory::getApplication()->enqueueMessage($message);
+            Factory::getApplication()->enqueueMessage($message);
         }
 
         // Check for errors.
-        if (count($errors = $this->get('Errors'))) {
-            JFactory::getApplication()->enqueueMessage(500, implode("\n", $errors), 'error');
+        if ($errors && count($errors = $this->get('Errors'))) {
+            Factory::getApplication()->enqueueMessage(500, implode("\n", $errors), 'error');
             return false;
         }
 
@@ -72,45 +75,47 @@ class XmapViewSitemaps extends JViewLegacy
     protected function addToolbar()
     {
         $state = $this->get('State');
-        $doc = JFactory::getDocument();
-        $version = new JVersion;
+        $doc = Factory::getDocument();
+        $version = new Version;
 
-        JToolBarHelper::addNew('sitemap.add');
-        JToolBarHelper::custom('sitemap.edit', 'edit.png', 'edit_f2.png', 'JTOOLBAR_EDIT', true);
+        ToolBarHelper::addNew('sitemap.add');
+        ToolBarHelper::custom('sitemap.edit', 'edit.png', 'edit_f2.png', 'JTOOLBAR_EDIT', true);
 
-        $doc->addStyleDeclaration('.icon-48-sitemap {background-image: url(components/com_xmap/images/sitemap-icon.png);}');
-        JToolBarHelper::title(JText::_('XMAP_SITEMAPS_TITLE'), 'sitemap.png');
-        JToolBarHelper::custom('sitemaps.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_Publish', true);
-        JToolBarHelper::custom('sitemaps.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+        $doc->addStyleDeclaration('.icon-48-sitemap {background-image: url(media/com_joxmap/images/sitemap-icon.png);}');
+        ToolBarHelper::title(Text::_('XMAP_SITEMAPS_TITLE'), 'sitemap.png');
+        ToolBarHelper::custom('sitemaps.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_Publish', true);
+        ToolBarHelper::custom('sitemaps.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 
         if (version_compare($version->getShortVersion(), '3.0.0', '>=')) {
-            JToolBarHelper::custom('sitemaps.setdefault', 'featured.png', 'featured_f2.png', 'XMAP_TOOLBAR_SET_DEFAULT', true);
+            ToolBarHelper::custom('sitemaps.setdefault', 'featured.png', 'featured_f2.png', 'XMAP_TOOLBAR_SET_DEFAULT', true);
         } else {
-            JToolBarHelper::custom('sitemaps.setdefault', 'default.png', 'default_f2.png', 'XMAP_TOOLBAR_SET_DEFAULT', true);
+            ToolBarHelper::custom('sitemaps.setdefault', 'default.png', 'default_f2.png', 'XMAP_TOOLBAR_SET_DEFAULT', true);
         }
-        if ($state->get('filter.published') == -2) {
-            JToolBarHelper::deleteList('', 'sitemaps.delete','JTOOLBAR_DELETE');
+        if ($state) {
+            if ($state->get('filter.published') == -2) {
+                ToolBarHelper::deleteList('', 'sitemaps.delete','JTOOLBAR_DELETE');
+            }
+            else {
+                ToolBarHelper::trash('sitemaps.trash','JTOOLBAR_TRASH');
+            }
         }
-        else {
-            JToolBarHelper::trash('sitemaps.trash','JTOOLBAR_TRASH');
-        }
-        JToolBarHelper::divider();
+        ToolBarHelper::divider();
 
 
-        if (class_exists('JHtmlSidebar')){
-            JHtmlSidebar::addFilter(
-                JText::_('JOPTION_SELECT_PUBLISHED'),
+        if (class_exists('JHtmlSidebar') && $this->state){
+            Sidebar::addFilter(
+                Text::_('JOPTION_SELECT_PUBLISHED'),
                 'filter_published',
-                JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
+                HTMLHelper::_('select.options', HTMLHelper::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
             );
 
-            JHtmlSidebar::addFilter(
-                JText::_('JOPTION_SELECT_ACCESS'),
+            SideBar::addFilter(
+                Text::_('JOPTION_SELECT_ACCESS'),
                 'filter_access',
-                JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
+                HTMLHelper::_('select.options', HTMLHelper::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
             );
 
-            $this->sidebar = JHtmlSidebar::render();
+            $this->sidebar = SideBar::render();
         }
     }
 }

@@ -1,22 +1,29 @@
 <?php
 /**
- * @version       $Id$
- * @copyright     Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license       GNU General Public License version 2 or later; see LICENSE.txt
- * @author        Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+namespace JLTRY\Component\JoXmap\Administrator\Table;
+
 // no direct access
 defined('_JEXEC') or die;
 use Joomla\CMS\Application\ApplicationHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
+use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\Table\Table as JTable;
 
 /**
  * @package         Xmap
  * @subpackage      com_xmap
  * @since           2.0
  */
-class XmapTableSitemap extends JTable
+class JoXmapTable extends Table
 {
 
     /**
@@ -101,7 +108,7 @@ class XmapTableSitemap extends JTable
      */
     function __construct(&$db)
     {
-        parent::__construct('#__xmap_sitemap', 'id', $db);
+        parent::__construct('#__joxmap_sitemap', 'id', $db);
     }
 
     /**
@@ -116,7 +123,7 @@ class XmapTableSitemap extends JTable
     function bind($array, $ignore = '')
     {
         if (isset($array['attribs']) && is_array($array['attribs'])) {
-            $registry = new JRegistry();
+            $registry = new Registry();
             $registry->loadArray($array['attribs']);
             $array['attribs'] = $registry->toString();
         }
@@ -131,13 +138,13 @@ class XmapTableSitemap extends JTable
                 );
             }
 
-            $registry = new JRegistry();
+            $registry = new Registry();
             $registry->loadArray($selections);
             $array['selections'] = $registry->toString();
         }
 
         if (isset($array['metadata']) && is_array($array['metadata'])) {
-            $registry = new JRegistry();
+            $registry = new Registry();
             $registry->loadArray($array['metadata']);
             $array['metadata'] = $registry->toString();
         }
@@ -157,7 +164,7 @@ class XmapTableSitemap extends JTable
     {
 
         if (empty($this->title)) {
-            $this->setError(JText::_('Sitemap must have a title'));
+            $this->setError(Text::_('Sitemap must have a title'));
             return false;
         }
 
@@ -167,7 +174,7 @@ class XmapTableSitemap extends JTable
         $this->alias = ApplicationHelper::stringURLSafe($this->alias);
 
         if (trim(str_replace('-', '', $this->alias)) == '') {
-            $datenow = &JFactory::getDate();
+            $datenow = &Factory::getDate();
             $this->alias = $datenow->format("Y-m-d-H-i-s");
         }
 
@@ -183,7 +190,7 @@ class XmapTableSitemap extends JTable
      */
     public function store($updateNulls = false)
     {
-        $date = JFactory::getDate();
+        $date = Factory::getDate();
         if (!$this->id) {
             $this->created = $date->toSql();
         }
@@ -207,11 +214,7 @@ class XmapTableSitemap extends JTable
         $k = $this->_tbl_key;
 
         // Sanitize input.
-        if (version_compare(JVERSION, '4.0', 'ge')){
-            ArrayHelper::toInteger($pks);
-        } else {
-            JArrayHelper::toInteger($pks);
-        }
+        ArrayHelper::toInteger($pks);
         $userId = (int) $userId;
         $state = (int) $state;
 
@@ -222,7 +225,7 @@ class XmapTableSitemap extends JTable
             }
             // Nothing to set publishing state on, return false.
             else {
-                $this->setError(JText::_('No_Rows_Selected'));
+                $this->setError(Text::_('No_Rows_Selected'));
                 return false;
             }
         }
@@ -233,25 +236,14 @@ class XmapTableSitemap extends JTable
 
         // Update the publishing state for rows with the given primary keys.
         $query =  $this->_db->getQuery(true)
-                       ->update($this->_db->quoteName('#__xmap_sitemap'))
+                       ->update($this->_db->quoteName('#__joxmap_sitemap'))
                        ->set($this->_db->quoteName('state').' = '. (int) $state)
                        ->where($where);
 
         $this->_db->setQuery($query);
-        if (version_compare(JVERSION, '4.0', 'ge')) {
-            if (!$this->_db->execute()) {
-               return false;
-            }
-        } else {
-            $this->_db->query();
-           // Check for a database error.
-           if ($this->_db->getErrorNum()) {
-              $this->setError($this->_db->getErrorMsg());
-            return false;
-           }
+       if (!$this->_db->execute()) {
+          return false;
         }
-
-
 
         // If the JTable instance value is in the list of primary keys that were set, set the instance.
         if (in_array($this->$k, $pks)) {

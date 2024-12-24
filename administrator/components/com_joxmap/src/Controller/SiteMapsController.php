@@ -1,25 +1,36 @@
 <?php
 /**
- * @version     $Id$
- * @copyright   Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 
-// no direct access
+
+namespace JLTRY\Component\JoXmap\Administrator\Controller;
+
+// No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controlleradmin');
+
+use JLTRY\Component\JoXmap\Administrator\Helper\JoXmapHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Language\Text;
+
 
 /**
- * @package     Xmap
+ * @package     JoXmap
  * @subpackage  com_xmap
  * @since       2.0
  */
-class XmapControllerSitemaps extends JControllerAdmin
+class SitemapsController extends AdminController
 {
 
-    protected $text_prefix = 'COM_XMAP_SITEMAPS';
+    protected $text_prefix = 'COM_JOXMAP_SITEMAPS';
 
     /**
      * Constructor
@@ -43,16 +54,16 @@ class XmapControllerSitemaps extends JControllerAdmin
     function setDefault()
     {
         // Check for request forgeries
-        if (version_compare(JVERSION, '4.0', '<')){
-            JFactory::getApplication()->input->checkToken() or die('Invalid Token');
+        if (version_compare(Version, '4.0', '<')){
+            Factory::getApplication()->input->checkToken() or die('Invalid Token');
         }
 
         // Get items to publish from the request.
-        $cid = XmapHelper::getVar('cid', 0, '', 'array');
+        $cid = JoXmapHelper::getVar('cid', 0, '', 'array');
         $id  = @$cid[0];
 
         if (!$id) {
-            JFactory::getApplication()->enqueueMessage(500, JText::_('Select an item to set as default'), 'warning');
+            Factory::getApplication()->enqueueMessage(500, Text::_('Select an item to set as default'), 'warning');
         }
         else
         {
@@ -61,11 +72,11 @@ class XmapControllerSitemaps extends JControllerAdmin
 
             // Publish the items.
             if (!$model->setDefault($id)) {
-                JFactory::getApplication()->enqueueMessage(500, $model->getError(), 'warning');
+                Factory::getApplication()->enqueueMessage(500, $model->getError(), 'warning');
             }
         }
 
-        $this->setRedirect('index.php?option=com_xmap&view=sitemaps');
+        $this->setRedirect('index.php?option=com_joxmap&view=sitemaps');
     }
 
     /**
@@ -77,7 +88,7 @@ class XmapControllerSitemaps extends JControllerAdmin
      * @return    JModel
      * @since    2.0
      */
-    public function getModel($name = 'Sitemap', $prefix = 'XmapModel', $config = array('ignore_request' => true))
+    public function getModel($name = 'Sitemap', $prefix = 'JoXmapModel', $config = array('ignore_request' => true))
     {
         $model = parent::getModel($name, $prefix, $config);
 

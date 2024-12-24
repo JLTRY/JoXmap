@@ -1,34 +1,33 @@
 <?php
 /**
- * @version          $Id$
- * @copyright        Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license          GNU General Public License version 2 or later; see LICENSE.txt
- * @author           Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+namespace JLTRY\Component\JoXmap\Administrator\Field;
 defined('_JEXEC') or die;
 
 
-jimport('joomla.html.html');
-use Joomla\CMS\Version as JVersion; 	
-use Joomla\CMS\Language\Text as JText;
-use Joomla\CMS\HTML\HTMLHelper as JHTML;
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Form\Field\ListField as JFormFieldList;
- 
-if (version_compare(JVERSION, '4.0', '<')){
-    require_once JPATH_LIBRARIES . '/joomla/form/fields/list.php';
-}
-JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
-
+use JLTRY\Component\JoXmap\Administrator\Helper\HtmlHelperXmap;
+use Joomla\CMS\Version; 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper ;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Field\ListField;
+use Joomla\Registry\Registry;
 
 /**
  * Menus Form Field class for the Xmap Component
  *
- * @package      Xmap
- * @subpackage   com_xmap
+ * @package      JoXmap
+ * @subpackage   com_joxmap
  * @since        2.0
  */
-class JFormFieldXmapmenus extends JFormFieldList
+class XmapMenusField extends ListField
 {
 
     /**
@@ -36,7 +35,7 @@ class JFormFieldXmapmenus extends JFormFieldList
      *
      * @var      string
      */
-    public $type = 'Xmapmenus';
+    public $type = 'XmapMenus';
 
     /**
      * Method to get a list of options for a list input.
@@ -45,7 +44,7 @@ class JFormFieldXmapmenus extends JFormFieldList
      */
     protected function _getOptions()
     {
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         $query = $db->getQuery(true);
 
         //$currentMenus = array_keys(get_object_vars($this->value));
@@ -76,7 +75,7 @@ class JFormFieldXmapmenus extends JFormFieldList
         }
 
         // Check for a database error.
-        if (version_compare(JVERSION, '4.0', '<')){
+        if (version_compare(Version::MAJOR_VERSION, '4.0', '<')){
             if ($db->getErrorNum()) {
                 JError::raiseWarning(500, $db->getErrorMsg());
             }
@@ -98,8 +97,8 @@ class JFormFieldXmapmenus extends JFormFieldList
         $disabled = $this->element['disabled'] == 'true' ? true : false;
         $readonly = $this->element['readonly'] == 'true' ? true : false;
         $attributes = ' ';
-
         $type = 'radio';
+
         if ($v = $this->element['size']) {
             $attributes .= 'size="' . $v . '" ';
         }
@@ -115,13 +114,13 @@ class JFormFieldXmapmenus extends JFormFieldList
         $value = $this->value;
         if (!is_array($value)) {
             // Convert the selections field to an array.
-            $registry = new JRegistry;
+            $registry = new Registry;
             $registry->loadString($value);
             $value = $registry->toArray();
         }
-        $version = new JVersion;
+        $version = new Version;
         if (version_compare($version->getShortVersion(), '4.0.0-beta', '<')) {
-         $doc = JFactory::getDocument();
+         $doc = Factory::getDocument();
          $doc->addScriptDeclaration("jQuery(document).ready(function($) {
             \$('.xmap-menu-options select').mouseover(function(event){xmapMenusSortable.detach();});
             \$('.xmap-menu-options select').mouseout(function(event){xmapMenusSortable.attach();});
@@ -161,10 +160,10 @@ class JFormFieldXmapmenus extends JFormFieldList
             $return .= '<input type="' . $type . '" id="' . $this->id . '_' . $i . '" name="' . $this->name . '" value="' . $option->value . '"' . $attributes . $selected . ' />';
             $return .= '<label for="' . $this->id . '_' . $i . '" class="menu_label">' . $option->text . '</label>';
             $return .= '<div class="xmap-menu-options" id="menu_options_' . $i . '">';
-            $return .= '<label class="control-label">' . JText::_('XMAP_PRIORITY') . '</label>';
-            $return .= '<div class="controls">' . JHTML::_('xmap.priorities', $prioritiesName, ($selected ? $value[$option->value]->priority : '0.5'), $i) . '</div>';
-            $return .= '<label class="control-label">' . JText::_('XMAP_CHANGE_FREQUENCY') . '</label>';
-            $return .= '<div class="controls">' . JHTML::_('xmap.changefrequency', $changefreqName, ($selected ? $value[$option->value]->changefreq : 'weekly'), $i) . '</div>';
+            $return .= '<label class="control-label">' . Text::_('XMAP_PRIORITY') . '</label>';
+            $return .= '<div class="controls">' .HTMLHelperXmap::priorities($prioritiesName, ($selected ? $value[$option->value]->priority : '0.5'), $i) . '</div>';
+            $return .= '<label class="control-label">' . Text::_('XMAP_CHANGE_FREQUENCY') . '</label>';
+            $return .= '<div class="controls">' . HTMLHelperXmap::changefrequency($changefreqName, ($selected ? $value[$option->value]->changefreq : 'weekly'), $i) . '</div>';
             $return .= '</div>';
             $return .= '</li>';
         }

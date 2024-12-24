@@ -1,22 +1,28 @@
 <?php
 /**
- * @version     $Id$
- * @copyright   Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 
+namespace JLTRY\Component\JoXmap\Administrator\Controller;
 // No direct access
 defined('_JEXEC') or die;
-use Joomla\CMS\MVC\Controller\FormController as JControllerForm;
-jimport('joomla.application.component.controllerform');
+
+
+use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\Factory;
 
 /**
- * @package     Xmap
- * @subpackage  com_xmap
+ * @package     JoXmap
+ * @subpackage  com_joxmap
  * @since       2.0
  */
-class XmapControllerSitemap extends JControllerForm
+class SiteMapController extends FormController
 {
     /**
      * Method override to check if the user can edit an existing record.
@@ -32,6 +38,6 @@ class XmapControllerSitemap extends JControllerForm
         $recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 
         // Assets are being tracked, so no need to look into the category.
-        return JFactory::getUser()->authorise('core.edit', 'com_xmap.sitemap.'.$recordId);
+        return Factory::getUser()->authorise('core.edit', 'com_xmap.sitemap.'.$recordId);
     }
 }

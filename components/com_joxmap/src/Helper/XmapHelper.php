@@ -6,16 +6,20 @@
  * @license       GNU General Public License version 2 or later; see LICENSE.txt
  * @author        Guillermo Vargas (guille@vargas.co.cr)
  */
+ 
+namespace JLTRY\Component\JoXmap\Site\Helper;
+
 // No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
-use Joomla\CMS\Factory as JFactory; 	 
-use Joomla\Registry\Registry as JRegistry;
-use Joomla\CMS\Component\ComponentHelper as JComponentHelper;
-use Joomla\CMS\Uri\Uri as JURI;
-use Joomla\CMS\Router\Router as JRouter;
-use Joomla\CMS\Router\SiteRouter as JRouterSite;
+
+use Joomla\CMS\Factory;
+use Joomla\Registry\Registry;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Uri\Uri ;
+use Joomla\CMS\Router\Router;
+use Joomla\CMS\Router\SiteRouter;
 use Joomla\CMS\Application\SiteApplication;
-jimport('joomla.database.query');
+
 
 /**
  * Xmap Component Sitemap Model
@@ -29,9 +33,9 @@ class XmapHelper
 
     public static function &getMenuItems($selections)
     {
-        $db = JFactory::getDbo();
-        $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        $db = Factory::getDbo();
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
         $list = array();
 
         foreach ($selections as $menutype => $menuOptions) {
@@ -58,7 +62,7 @@ class XmapHelper
 
             // Filter by language
             if ($app->getLanguageFilter()) {
-                $query->where('n.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+                $query->where('n.language in ('.$db->quote(Factory::getLanguage()->getTag()).','.$db->quote('*').')');
             }
 
             // Get the list of menu items.
@@ -79,12 +83,12 @@ class XmapHelper
             foreach ($tmpList as $id => $item) {
                 $item->items = array();
 
-                $params = new JRegistry($item->params);
+                $params = new Registry($item->params);
                 $item->uid = 'itemid'.$item->id;
 
                 if (preg_match('#^/?index.php.*option=(com_[^&]+)#', $item->link, $matches)) {
                     $item->option = $matches[1];
-                    $componentParams = clone(JComponentHelper::getParams($item->option));
+                    $componentParams = clone(ComponentHelper::getParams($item->option));
                     $componentParams->merge($params);
                     //$params->merge($componentParams);
                     $params = $componentParams;
@@ -124,7 +128,7 @@ class XmapHelper
         if ($list != null) {
             return $list;
         }
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         $list = array();
         // Get the menu items as a tree.
@@ -141,7 +145,7 @@ class XmapHelper
         foreach ($extensions as $element => $extension) {
             if (file_exists(JPATH_PLUGINS . '/' . $extension->folder . '/' . $element. '/'. $element . '.php')) {
                 require_once(JPATH_PLUGINS . '/' . $extension->folder . '/' . $element. '/'. $element . '.php');
-                $params = new JRegistry($extension->params);
+                $params = new Registry($extension->params);
                 $extension->params = $params->toArray();
                 $list[$element] = $extension;
             }
@@ -173,7 +177,7 @@ class XmapHelper
     static function getImages($text,$max)
     {
         if (!isset($urlBase)) {
-            $urlBase = JURI::base();
+            $urlBase = Uri::base();
             $urlBaseLen = strlen($urlBase);
         }
 
@@ -243,7 +247,7 @@ class XmapHelper
 
 	public static function getpost() {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			return JFactory::getApplication()->input->getArray(array());
+			return Factory::getApplication()->input->getArray(array());
 		}
 		else {
 			return call_user_func_array('JRequest::get', ['post']);
@@ -253,9 +257,9 @@ class XmapHelper
 	public static function get(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
 			if ($params[0] == 'post '){
-				return JFactory::getApplication()->input->getInputForRequestMethod('POST');
+				return Factory::getApplication()->input->getInputForRequestMethod('POST');
 			} else {
-				return call_user_func_array(array(JFactory::getApplication()->input, 'get'), $params);
+				return call_user_func_array(array(Factory::getApplication()->input, 'get'), $params);
 			}
 		}
 		else {
@@ -265,7 +269,7 @@ class XmapHelper
 	
 	public static function getVar(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getVar'), $params);
+			return call_user_func_array(array(Factory::getApplication()->input, 'getVar'), $params);
 		}
 		else {
 			return call_user_func_array('JRequest::getVar', $params);
@@ -275,7 +279,7 @@ class XmapHelper
 
 	public static function setVar(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			call_user_func_array(array(JFactory::getApplication()->input, 'setVar'), $params);
+			call_user_func_array(array(Factory::getApplication()->input, 'setVar'), $params);
 		}
 		else {
 			call_user_func_array('JRequest::setVar', $params);
@@ -284,7 +288,7 @@ class XmapHelper
 
 	public static function getCmd(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getCmd'), $params);
+			return call_user_func_array(array(Factory::getApplication()->input, 'getCmd'), $params);
 		}
 		else {
 			return call_user_func_array('JRequest::getCmd', $params);
@@ -293,7 +297,7 @@ class XmapHelper
 
 	public static function getInt(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			$recordId = call_user_func_array(array(JFactory::getApplication()->input, 'getInt'), $params);
+			$recordId = call_user_func_array(array(Factory::getApplication()->input, 'getInt'), $params);
 		}
 		else {
 			$recordId	= (int)call_user_func_array('JRequest::getInt', $params);
@@ -303,7 +307,7 @@ class XmapHelper
 	
 	public static function getBool(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getBool'), $params);
+			return call_user_func_array(array(Factory::getApplication()->input, 'getBool'), $params);
 		}
 		else {
 			return (int)call_user_func_array('JRequest::getBool', $params);
@@ -311,7 +315,7 @@ class XmapHelper
 	}
 	public static function getWord(...$params) {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			return call_user_func_array(array(JFactory::getApplication()->input, 'getWord'), $params);
+			return call_user_func_array(array(Factory::getApplication()->input, 'getWord'), $params);
 		}
 		else {
 			return (int)call_user_func_array('JRequest::getWord', $params);
@@ -319,28 +323,17 @@ class XmapHelper
 	}
 	
 	public static function getURI() {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-			return JUri::getInstance();
-		}
-		else {
-			return JFactory::getURI();
-		}
+		return Uri::getInstance();
 	}
 	
 	public static function getRouter() {
-		if (version_compare(JVERSION, '4.0', 'ge')){
-            $app    = SiteApplication::getInstance('site'); 
-            return $app->getRouter();     
-			//return JRouter::getInstance("site");
-		}
-		else {
-			return JSite::getRouter();
-		}
+        $app    = SiteApplication::getInstance('site'); 
+        return $app->getRouter();
 	}
 	
 	public static function isAppSef() {
 		if (version_compare(JVERSION, '4.0', 'ge')){
-			return JFactory::getApplication()->get('sef', 1);
+			return Factory::getApplication()->get('sef', 1);
 		} else {
 			return $router->getMode() == JROUTER_MODE_SEF;
 		}

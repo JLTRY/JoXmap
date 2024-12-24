@@ -1,26 +1,33 @@
 <?php
 /**
- * @version             $Id$
- * @copyright           Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license             GNU General Public License version 2 or later; see LICENSE.txt
- * @author              Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+
+namespace JLTRY\Component\JoXmap\Administrator\View\Sitemap;
+
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
+use JLTRY\Component\JoXmap\Administrator\Helper\Xmap;
+use JLTRY\Component\JoXmap\Administrator\Helper\Field\XmapMenusField;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Version as JVersion;
-use Joomla\CMS\HTML\HTMLHelper as JHTML;
-use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Version;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 /**
- * @package    Xmap
- * @subpackage com_xmap
+ * @package    JoXmap
+ * @subpackage com_joxmap
  */
-class XmapViewSitemap extends BaseHtmlView
+class HtmlView extends BaseHtmlView
 {
 
     protected $item;
@@ -35,12 +42,13 @@ class XmapViewSitemap extends BaseHtmlView
      */
     function display($tpl = null)
     {
-        $app = JFactory::getApplication();
-        $this->state = $this->get('State');
+        $app = Factory::getApplication();
         $this->item = $this->get('Item');
+        if ($this->item) {
+            $this->state = $this->get('State');
+        }
         $this->form = $this->get('Form');
         $this->fieldsets   =  $this->form ?  $this->form->getFieldsets() : null;
-        $version = new JVersion;
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
@@ -48,22 +56,15 @@ class XmapViewSitemap extends BaseHtmlView
             return false;
         }
 
-        JHTML::stylesheet('administrator/components/com_xmap/css/xmap.css');
+        HTMLHelper::stylesheet('media/com_joxmap/css/xmapedit.css');
         // Convert dates from UTC
         $offset = $app->getCfg('offset');
         if (intval($this->item->created)) {
-            $this->item->created = JHtml::date($this->item->created, '%Y-%m-%d %H-%M-%S', $offset);
+            $this->item->created = HTMLHelper::date($this->item->created, '%Y-%m-%d %H-%M-%S', $offset);
         }
 
         $this->addToolbar();
 
-        if (version_compare($version->getShortVersion(), '3.0.0', '<')) {
-            $tpl = 'legacy';
-        }
-        $versionshort = $version->getShortVersion();
-        if (version_compare($version->getShortVersion(), '4.0.0-beta', '>')) {
-            $tpl = 'new';
-        }
         // XmapHelper::setVar('hidemainmenu', true);
         parent::display($tpl);
     }
@@ -75,21 +76,22 @@ class XmapViewSitemap extends BaseHtmlView
      */
     function navigator($tpl = null)
     {
-        require_once(JPATH_COMPONENT_SITE . '/helpers/xmap.php');
-        $app = JFactory::getApplication();
-        $this->state = $this->get('State');
+        $app = Factory::getApplication();
         $this->item = $this->get('Item');
+        if ($this->item) {
+            $this->state = $this->get('State');
+        }
 
-        $menuItems = XmapHelper::getMenuItems($item->selections);
-        $extensions = XmapHelper::getExtensions();
+        $menuItems = Xmap::getMenuItems($item->selections);
+        $extensions = Xmap::getExtensions();
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
             JError::raiseError(500, implode("\n", $errors));
             return false;
         }
 
-        JHTML::script('mootree.js', 'media/system/js/');
-        JHTML::stylesheet('mootree.css', 'media/system/css/');
+        HTMLHelper::script('mootree.js', 'media/system/js/');
+        HTMLHelper::stylesheet('mootree.css', 'media/system/css/');
 
         $this->loadTemplate('class');
         $displayer = new XmapNavigatorDisplayer($state->params, $this->item);
@@ -99,15 +101,14 @@ class XmapViewSitemap extends BaseHtmlView
 
     function navigatorLinks($tpl = null)
     {
-        require_once(JPATH_COMPONENT_SITE . '/helpers/xmap.php');
-        $link = urldecode(XmapHelper::getVar('link', ''));
-        $name = XmapHelper::getCmd('e_name', '');
-        $Itemid = XmapHelper::getInt('Itemid');
+        $link = urldecode(Xmap::getVar('link', ''));
+        $name = Xmap::getCmd('e_name', '');
+        $Itemid = Xmap::getInt('Itemid');
 
         $this->item = $this->get('Item');
         $this->state = $this->get('State');
-        $menuItems = XmapHelper::getMenuItems($item->selections);
-        $extensions = XmapHelper::getExtensions();
+        $menuItems = Xmap::getMenuItems($item->selections);
+        $extensions = Xmap::getExtensions();
 
         $this->loadTemplate('class');
         $nav = new XmapNavigatorDisplayer($state->params, $item);
@@ -175,10 +176,10 @@ class XmapViewSitemap extends BaseHtmlView
      */
     function addToolbar()
     {
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
         $isNew = ($this->item->id == 0);
 
-		$title = JText::_('XMAP_PAGE_' . ($isNew ? 'ADD_SITEMAP' : 'EDIT_SITEMAP'));
+		$title = Text::_('XMAP_PAGE_' . ($isNew ? 'ADD_SITEMAP' : 'EDIT_SITEMAP'));
 		ToolbarHelper::title($title,'article-add.png');
 		ToolBarHelper::apply('sitemap.apply', 'JTOOLBAR_APPLY');
 		ToolbarHelper::saveGroup(

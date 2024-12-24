@@ -5,16 +5,19 @@
  * @license        GNU General Public License version 2 or later; see LICENSE.txt
  * @author        Guillermo Vargas (guille@vargas.co.cr)
  */
+
+namespace JLTRY\Component\JoXmap\Site\Controller;
+
 // No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_COMPONENT . '/displayer.php');
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Uri\Uri as JURI;
-use Joomla\CMS\Router\Route as JRoute;
-use Joomla\CMS\Date\Date as JDate;
+use JLTRY\Component\JoXmap\Site\Helper\XmapHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri ;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Date\Date ;
 
-class XmapXmlDisplayer extends XmapDisplayer
+class JoXmapXmlDisplayer extends JoXmapDisplayer
 {
 
     /**
@@ -50,7 +53,7 @@ class XmapXmlDisplayer extends XmapDisplayer
         parent::__construct($config, $sitemap);
         $this->uids = array();
 
-        $this->defaultLanguage = strtolower(JFactory::getLanguage()->getTag());
+        $this->defaultLanguage = strtolower(Factory::getLanguage()->getTag());
         if (preg_match('/^([a-z]+)-.*/',$this->defaultLanguage,$matches) && !in_array($this->defaultLanguage, array(' zh-cn',' zh-tw')) ) {
             $this->defaultLanguage = $matches[1];
         }
@@ -58,7 +61,7 @@ class XmapXmlDisplayer extends XmapDisplayer
         $this->showTitle = XmapHelper::getBool('filter_showtitle', 0);
         $this->showExcluded = XmapHelper::getBool('filter_showexcluded', 0);
 
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         $this->nullDate = $db->getNullDate();
     }
 
@@ -87,7 +90,7 @@ class XmapXmlDisplayer extends XmapDisplayer
         }
 
         // Get the item's URL
-        $link = JRoute::_($node->link, true, @$node->secure == 0 ? (XmapHelper::getURI()->isSSL() ? 1 : -1) : $node->secure);
+        $link = Route::_($node->link, true, @$node->secure == 0 ? (XmapHelper::getURI()->isSSL() ? 1 : -1) : $node->secure);
 
         if (!isset($node->browserNav))
             $node->browserNav = 0;
@@ -124,7 +127,7 @@ class XmapXmlDisplayer extends XmapDisplayer
                 $modified = time();
             }
             if ($modified && !is_numeric($modified)){
-                $date =  new JDate($modified);
+                $date =  new Date($modified);
                 $modified = $date->toUnix();
             }
             if ($modified) {

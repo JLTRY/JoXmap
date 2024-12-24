@@ -1,24 +1,31 @@
 <?php
 /**
- * @version     $Id$
- * @copyright   Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+ 
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controller');
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\MVC\Controller\BaseController as JControllerLegacy;
+namespace JLTRY\Component\JoXmap\Administrator\Controller;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Controller\BaseController;
+use JLTRY\Component\JoXmap\Administrator\Helper\Xmap;
+
 
 /**
  * Component Controller
  *
- * @package     Xmap
- * @subpackage  com_xmap
+ * @package     JoXmap
+ * @subpackage  com_joxmap
  */
-class XmapController extends JControllerLegacy
+class JoXmapController extends BaseController
 {
 
     function __construct()
@@ -28,57 +35,26 @@ class XmapController extends JControllerLegacy
         $this->registerTask('navigator-links', 'navigatorLinks');
     }
 
-    /**
-     * Display the view
-     */
-    public function display($cachable = false, $urlparams = false)
-    {
-        require_once JPATH_COMPONENT . '/helpers/xmap.php';
-
-        // Get the document object.
-        $document = JFactory::getDocument();
-
-        // Set the default view name and format from the Request.
-        $vName = XmapHelper::getWord('view', 'sitemaps');
-        $vFormat = $document->getType();
-        $lName = XmapHelper::getWord('layout', 'default');
-
-        // Get and render the view.
-        if ($view = $this->getView($vName, $vFormat)) {
-            // Get the model for the view.
-            $model = $this->getModel($vName);
-
-            // Push the model into the view (as default).
-            $view->setModel($model, true);
-            $view->setLayout($lName);
-
-            // Push document object into the view.
-            $view->document = $document;
-
-            $view->display();
-
-        }
-    }
 
     function navigator()
     {
-        $db = JFactory::getDBO();
-        $document = JFactory::getDocument();
-        $app = JFactory::getApplication('administrator');
+        $db = Factory::getDBO();
+        $document = Factory::getDocument();
+        $app = Factory::getApplication('administrator');
 
-        $id = XmapHelper::getInt('sitemap', 0);
-        $link = urldecode(XmapHelper::getVar('link', ''));
-        $name = XmapHelper::getCmd('e_name', '');
+        $id = Xmap::getInt('sitemap', 0);
+        $link = urldecode(Xmap::getVar('link', ''));
+        $name = Xmap::getCmd('e_name', '');
         if (!$id) {
             $id = $this->getDefaultSitemapId();
         }
 
         if (!$id) {
-			JFactory::getApplication()->enqueueMessage(500, JText::_('Xmap_Not_Sitemap_Selected'), 'warning');
+			Factory::getApplication()->enqueueMessage(500, Text::_('Xmap_Not_Sitemap_Selected'), 'warning');
 			return false;
         }
 
-        $app->setUserState('com_xmap.edit.sitemap.id', $id);
+        $app->setUserState('com_joxmap.edit.sitemap.id', $id);
 
         $view = $this->getView('sitemap', $document->getType());
         $model = $this->getModel('Sitemap');
@@ -94,23 +70,23 @@ class XmapController extends JControllerLegacy
     function navigatorLinks()
     {
 
-        $db = JFactory::getDBO();
-        $document = JFactory::getDocument();
-        $app = JFactory::getApplication('administrator');
+        $db = Factory::getDBO();
+        $document = Factory::getDocument();
+        $app = Factory::getApplication('administrator');
 
-        $id = XmapHelper::getInt('sitemap', 0);
-        $link = urldecode(XmapHelper::getVar('link', ''));
-        $name = XmapHelper::getCmd('e_name', '');
+        $id = Xmap::getInt('sitemap', 0);
+        $link = urldecode(Xmap::getVar('link', ''));
+        $name = Xmap::getCmd('e_name', '');
         if (!$id) {
             $id = $this->getDefaultSitemapId();
         }
 
         if (!$id) {
-            JFactory::getApplication()->enqueueMessage(500, JText::_('Xmap_Not_Sitemap_Selected'), 'warning');
+            Factory::getApplication()->enqueueMessage(500, Text::_('Xmap_Not_Sitemap_Selected'), 'warning');
             return false;
         }
 
-        $app->setUserState('com_xmap.edit.sitemap.id', $id);
+        $app->setUserState('com_joxmap.edit.sitemap.id', $id);
 
         $view = $this->getView('sitemap', $document->getType());
         $model = $this->getModel('Sitemap');
@@ -125,10 +101,10 @@ class XmapController extends JControllerLegacy
 
     private function getDefaultSitemapId()
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $query  = $db->getQuery(true);
         $query->select('id');
-        $query->from($db->quoteName('#__xmap_sitemap'));
+        $query->from($db->quoteName('#__joxmap_sitemap'));
         $query->where('is_default=1');
         $db->setQuery($query);
         return $db->loadResult();

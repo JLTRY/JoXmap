@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension method="upgrade" version="1.5" type="component">
-    <name>com_xmap</name>
+    <name>com_joxmap</name>
     <creationDate>2011-04-10</creationDate>
-    <author>Guillermo Vargas</author>
+    <author>JL TRYOEN / (com_xmap) Guillermo Vargas</author>
     <copyright>This component is released under the GNU/GPL License</copyright>
-    <authorEmail>guille@vargas.co.cr</authorEmail>
-    <authorUrl>http://www.jooxmap.com</authorUrl>
-    <version>2.3.4</version>
+    <authorEmail>jltryoen@orange.fr;guille@vargas.co.cr</authorEmail>
+    <authorUrl>http://www.jltryoen.fr</authorUrl>
+    <version>1.0.0</version>
     <license>GNU/GPL</license>
-    <description>Xmap - Sitemap Generator for Joomla!</description>
-    <install folder="admin">
+    <description>Jo Xmap - Sitemap Generator for Joomla!</description>
+    <install folder="administrator/components/com_joxmap">
         <sql>
-            <file driver="mysql" charset="utf8">install/install.utf8.sql</file>
-            <file driver="postgresql" charset="utf8">install/install.postgresql.sql</file>
+            <file driver="mysql" charset="utf8">sql/install.mysql.sql</file>
         </sql>
     </install>
     <uninstall>
         <sql>
-            <file driver="mysql" charset="utf8">install/uninstall.utf8.sql</file>
-            <file driver="postgresql" charset="utf8">install/uninstall.postgresql.sql</file>
+            <file driver="mysql" charset="utf8">install/uninstall.mysql.sql</file>
         </sql>
     </uninstall>
-    <files folder="front">
+   <!-- <files folder="front">
         <filename>controller.php</filename>
         <filename>displayer.php</filename>
         <filename>index.html</filename>
@@ -44,43 +42,69 @@
     </languages>
     <images folder="admin">
         <folder>images</folder>
-    </images>
+    </images>-->
+    <!-- This is the PHP namespace under which the extension's
+    code is organised. It should follow this format:
+    
+    Vendor\Component\ComponentName
+
+    "Vendor" can be your company or your own name
+    
+    The "ComponentName" section MUST match the name used 
+    everywhere else for your component. Whatever the name of 
+    this XML file is, the namespace must match (ignoring CamelCase). 
+    -->
+    <namespace path="src/">JLTRY\Component\JoXmap</namespace>
+    <files folder="site">
+    <filename>joxmap.php</filename>
+    <filename>index.html</filename>
+    <folder>tmpl</folder>
+    <folder>src/Controller</folder>
+    <folder>src/Field</folder>
+    <folder>src/Helper</folder>
+    <folder>src/Model</folder>
+    <folder>src/Table</folder>
+    <folder>src/View</folder>
+    <folder>forms</folder>
+	<folder>tmpl</folder>
+	<folder>language</folder>
+    </files>
     <administration>
-        <menu img="components/com_xmap/images/xmap-favicon.png">COM_XMAP_TITLE</menu>
-        <files folder="admin">
-            <filename>xmap.php</filename>
-            <filename>controller.php</filename>
+        <menu img="media/com_joxmap/images/xmap-favicon.png">COM_JOXMAP_TITLE</menu>
+        <files folder="administrator/components/com_joxmap">
+            <filename>joxmap.php</filename>
             <filename>index.html</filename>
             <filename>LICENSE.txt</filename>
-            <folder>css</folder>
-            <folder>elements</folder>
-            <folder>images</folder>
-            <folder>install</folder>
-            <folder>helpers</folder>
-            <folder>controllers</folder>
-            <folder>tables</folder>
-            <folder>views</folder>
-            <folder>models</folder>
+            <filename>services/provider.php</filename>
+            <filename>sql/index.html</filename>
+            <filename>sql/install.mysql.sql</filename>
+            <filename>sql/uninstall.mysql.sql</filename>
+            <folder>tmpl</folder>
+            <folder>src/Controller</folder>
+            <folder>src/Field</folder>
+            <folder>src/Helper</folder>
+            <folder>src/Model</folder>
+            <folder>src/Table</folder>
+            <folder>src/View</folder>
+            <folder>forms</folder>
         </files>
-        <languages folder="admin/language">
-            <language tag="en-GB">en-GB/en-GB.com_xmap.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_xmap.sys.ini</language>
-            <language tag="es-ES">es-ES/es-ES.com_xmap.ini</language>
-            <language tag="es-ES">es-ES/es-ES.com_xmap.sys.ini</language>
-            <language tag="fa-IR">fa-IR/fa-IR.com_xmap.ini</language>
-            <language tag="fa-IR">fa-IR/fa-IR.com_xmap.sys.ini</language>
-            <language tag="cs-CZ">cs-CZ/cs-CZ.com_xmap.ini</language>
-            <language tag="cs-CZ">cs-CZ/cs-CZ.com_xmap.sys.ini</language>
-            <language tag="nl-NL">nl-NL/nl-NL.com_xmap.ini</language>
-            <language tag="nl-NL">nl-NL/nl-NL.com_xmap.sys.ini</language>
-            <language tag="ru-RU">ru-RU/ru-RU.com_xmap.ini</language>
-            <language tag="ru-RU">ru-RU/ru-RU.com_xmap.sys.ini</language>
+        <languages folder="administrator/components/com_joxmap/language">
+            <language tag="en-GB">en-GB/en-GB.com_joxmap.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_joxmap.sys.ini</language>
+            <language tag="fr-FR">fr-FR/fr-FR.com_joxmap.ini</language>
+            <language tag="fr-FR">fr-FR/fr-FR.com_joxmap.sys.ini</language>
         </languages>
-        <images folder="admin">
+        <!--<images folder="admin">
             <folder>images</folder>
-        </images>
+        </images>-->
     </administration>
+    <media destination="com_joxmap" folder="media/com_joxmap">
+       <filename>index.html</filename>
+       <folder>css</folder>
+       <folder>elements</folder>
+       <folder>images</folder>
+    </media>
     <updateservers>
-        <server type="extension" priority="1" name="Xmap Update Site">https://raw.github.com/guilleva/Xmap/master/xmap-update.xml</server>
+        <!--<server type="extension" priority="1" name="Xmap Update Site">https://raw.github.com/guilleva/Xmap/master/xmap-update.xml</server>-->
     </updateservers>
 </extension>

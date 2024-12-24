@@ -1,21 +1,29 @@
 <?php
 
 /**
- * @version       $Id$
- * @copyright     Copyright (C) 2005 - 2009 Joomla! Vargas. All rights reserved.
- * @license       GNU General Public License version 2 or later; see LICENSE.txt
- * @author        Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Site
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+ 
 // No direct access
+namespace JLTRY\Component\JoXmap\Site\Model;
+
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modelitem');
-jimport('joomla.database.query');
-use Joomla\CMS\MVC\Model\ItemModel as JModelItem;
-use Joomla\CMS\Factory as JFactory;
-use Joomla\Registry\Registry as JRegistry; 	 
+use JLTRY\Component\JoXmap\Site\Helper\XmapHelper;
 
-require_once(JPATH_COMPONENT . '/helpers/xmap.php');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Exception;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\ItemModel;
+use Joomla\Registry\Registry;
+
+
 
 /**
  * Xmap Component Sitemap Model
@@ -24,7 +32,7 @@ require_once(JPATH_COMPONENT . '/helpers/xmap.php');
  * @subpackage     com_xmap
  * @since          2.0
  */
-class XmapModelSitemap extends JModelItem
+class SitemapModel extends ItemModel
 {
 
     /**
@@ -43,10 +51,10 @@ class XmapModelSitemap extends JModelItem
      */
     protected function populateState()
     {
-        $app = JFactory::getApplication('site');
+        $app = Factory::getApplication('site');
 
         // Load state from the request.
-        $pk = JFactory::getApplication()->input->getInt('id');
+        $pk = Factory::getApplication()->input->getInt('id');
         $this->setState('sitemap.id', $pk);
 
         $offset = XmapHelper::getInt('limitstart');
@@ -77,7 +85,7 @@ class XmapModelSitemap extends JModelItem
         // If not sitemap specified, select the default one
         if (!$pk) {
             $query = $db->getQuery(true);
-            $query->select('id')->from('#__xmap_sitemap')->where('is_default=1');
+            $query->select('id')->from('#__joxmap_sitemap')->where('is_default=1');
             $db->setQuery($query);
             $pk = $db->loadResult();
         }
@@ -91,7 +99,7 @@ class XmapModelSitemap extends JModelItem
                 $query = $db->getQuery(true);
 
                 $query->select($this->getState('item.select', 'a.*'));
-                $query->from('#__xmap_sitemap AS a');
+                $query->from('#__joxmap_sitemap AS a');
 
                 $query->where('a.id = ' . (int) $pk);
 
@@ -103,7 +111,7 @@ class XmapModelSitemap extends JModelItem
 
                 // Filter by access level.
                 if ($access = $this->getState('filter.access')) {
-                    $user = JFactory::getUser();
+                    $user = Factory::getUser();
                     $groups = implode(',', $user->getAuthorisedViewLevels());
                     $query->where('a.access IN (' . $groups . ')');
                 }
@@ -117,22 +125,22 @@ class XmapModelSitemap extends JModelItem
                 // }
 
                 if (empty($data)) {
-                    throw new Exception(JText::_('COM_XMAP_ERROR_SITEMAP_NOT_FOUND'));
+                    throw new \Exception(Text::_('COM_JOXMAP_ERROR_SITEMAP_NOT_FOUND'));
                 }
 
                 // Check for published state if filter set.
                 if (is_numeric($published) && $data->state != $published) {
-                    throw new Exception(JText::_('COM_XMAP_ERROR_SITEMAP_NOT_FOUND'));
+                    throw new Exception(JText::_('COM_JOXMAP_ERROR_SITEMAP_NOT_FOUND'));
                 }
 
                 // Convert parameter fields to objects.
-                $registry = new JRegistry('_default');
+                $registry = new Registry('_default');
                 $registry->loadString($data->attribs);
                 $data->params = clone $this->getState('params');
                 $data->params->merge($registry);
 
                 // Convert the selections field to an array.
-                $registry = new JRegistry('_default');
+                $registry = new Registry('_default');
                 $registry->loadString($data->selections);
                 $data->selections = $registry->toArray();
 
@@ -142,7 +150,7 @@ class XmapModelSitemap extends JModelItem
                     $data->params->set('access-view', true);
                 } else {
                     // If no access filter is set, the layout takes some responsibility for display of limited information.
-                    $user = &JFactory::getUser();
+                    $user = &Factory::getUser();
                     $groups = $user->authorisedLevels();
 
                     $data->params->set('access-view', in_array($data->access, $groups));
@@ -190,8 +198,8 @@ class XmapModelSitemap extends JModelItem
         }
 
         $this->_db->setQuery(
-            'UPDATE #__xmap_sitemap' .
-            ' SET views_' . $view . ' = views_' . $view . ' + 1, count_' . $view . ' = ' . $count . ', lastvisit_' . $view . ' = ' . JFactory::getDate()->toUnix() .
+            'UPDATE #__joxmap_sitemap' .
+            ' SET views_' . $view . ' = views_' . $view . ' + 1, count_' . $view . ' = ' . $count . ', lastvisit_' . $view . ' = ' . Factory::getDate()->toUnix() .
             ' WHERE id = ' . (int) $pk
         );
 
@@ -218,13 +226,13 @@ class XmapModelSitemap extends JModelItem
         if (!isset($view)) {
             $view =XmapHelper::getCmd('view');
         }
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $pk = (int) $this->getState('sitemap.id');
 
         if (self::$items !== NULL && isset(self::$items[$view])) {
             return;
         }
-        $query = "select * from #__xmap_items where view='$view' and sitemap_id=" . $pk;
+        $query = "select * from #__joxmap_items where view='$view' and sitemap_id=" . $pk;
         $db->setQuery($query);
         $rows = $db->loadObjectList();
         self::$items[$view] = array();
@@ -245,7 +253,7 @@ class XmapModelSitemap extends JModelItem
     function chageItemPropery($uid, $itemid, $view, $property, $value)
     {
         $items = $this->getSitemapItems($view);
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $pk = (int) $this->getState('sitemap.id');
 
         $isNew = false;
@@ -260,9 +268,9 @@ class XmapModelSitemap extends JModelItem
             $sep = ';';
         }
         if (!$isNew) {
-            $query = 'UPDATE #__xmap_items SET properties=\'' . $db->escape($properties) . "' where uid='" . $db->escape($uid) . "' and itemid=$itemid and view='$view' and sitemap_id=" . $pk;
+            $query = 'UPDATE #__joxmap_items SET properties=\'' . $db->escape($properties) . "' where uid='" . $db->escape($uid) . "' and itemid=$itemid and view='$view' and sitemap_id=" . $pk;
         } else {
-            $query = 'INSERT #__xmap_items (uid,itemid,view,sitemap_id,properties) values ( \'' . $db->escape($uid) . "',$itemid,'$view',$pk,'" . $db->escape($properties) . "')";
+            $query = 'INSERT #__joxmap_items (uid,itemid,view,sitemap_id,properties) values ( \'' . $db->escape($uid) . "',$itemid,'$view',$pk,'" . $db->escape($properties) . "')";
         }
         $db->setQuery($query);
         //echo $db->getQuery();exit;
@@ -280,7 +288,7 @@ class XmapModelSitemap extends JModelItem
 
     function toggleItem($uid, $itemid)
     {
-        $app = JFactory::getApplication('site');
+        $app = Factory::getApplication('site');
         $sitemap = $this->getItem();
 
         $displayer = new XmapDisplayer($app->getParams(), $sitemap);
@@ -301,12 +309,12 @@ class XmapModelSitemap extends JModelItem
             $state = 1;
         }
 
-        $registry = new JRegistry('_default');
+        $registry = new Registry('_default');
         $registry->loadArray($excludedItems);
         $str = $registry->toString();
 
-        $db = JFactory::getDBO();
-        $query = "UPDATE #__xmap_sitemap set excluded_items='" . $db->escape($str) . "' where id=" . $sitemap->id;
+        $db = Factory::getDBO();
+        $query = "UPDATE #__joxmap_sitemap set excluded_items='" . $db->escape($str) . "' where id=" . $sitemap->id;
         $db->setQuery($query);
         if (version_compare(JVERSION, '4.0', 'ge')){
             $db->execute();

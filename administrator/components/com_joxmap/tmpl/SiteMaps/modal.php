@@ -9,35 +9,35 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('bootstrap.tooltip');
+JHTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+JHTMLHelper::_('bootstrap.tooltip');
 
 $function = XmapHelper::getVar('function', 'jSelectSitemap');
 $n = count($this->items);
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_xmap&view=sitemaps');?>" method="post" name="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_joxmap&view=sitemaps');?>" method="post" name="adminForm">
     <fieldset class="filter clearfix">
         <div class="left">
             <label for="search">
-                <?php echo JText::_('JSearch_Filter_Label'); ?>
+                <?php echo Text::_('JSearch_Filter_Label'); ?>
             </label>
-            <input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" size="60" title="<?php echo JText::_('Xmap_Filter_Search_Desc'); ?>" />
+            <input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" size="60" title="<?php echo Text::_('Xmap_Filter_Search_Desc'); ?>" />
 
             <button type="submit">
-                <?php echo JText::_('JSearch_Filter_Submit'); ?></button>
+                <?php echo Text::_('JSearch_Filter_Submit'); ?></button>
             <button type="button" onclick="$('filter_search').value='';this.form.submit();">
-                <?php echo JText::_('JSearch_Filter_Clear'); ?></button>
+                <?php echo Text::_('JSearch_Filter_Clear'); ?></button>
         </div>
 
         <div class="right">
             <select name="filter_access" class="inputbox" onchange="this.form.submit()">
-                <option value=""><?php echo JText::_('JOption_Select_Access');?></option>
-                <?php echo JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'));?>
+                <option value=""><?php echo Text::_('JOption_Select_Access');?></option>
+                <?php echo JHTMLHelper::_('select.options', JHTMLHelper::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'));?>
             </select>
 
             <select name="filter_published" class="inputbox" onchange="this.form.submit()">
-                <option value=""><?php echo JText::_('JOption_Select_Published');?></option>
-                <?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true);?>
+                <option value=""><?php echo Text::_('JOption_Select_Published');?></option>
+                <?php echo JHTMLHelper::_('select.options', JHTMLHelper::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true);?>
             </select>
 
         </div>
@@ -47,24 +47,24 @@ $n = count($this->items);
         <thead>
             <tr>
                 <th class="title">
-                    <?php echo JHtml::_('grid.sort', 'Xmap_Heading_Sitemap', 'a.title', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                    <?php echo JHTMLHelper::_('grid.sort', 'Xmap_Heading_Sitemap', 'a.title', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                 </th>
                 <th width="5%">
-                    <?php echo JHtml::_('grid.sort', 'Xmap_Heading_Published', 'a.state', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                    <?php echo JHTMLHelper::_('grid.sort', 'Xmap_Heading_Published', 'a.state', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                 </th>
                 <th width="10%">
-                    <?php echo JHtml::_('grid.sort',  'JGrid_Heading_Access', 'access_level', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                    <?php echo JHTMLHelper::_('grid.sort',  'JGrid_Heading_Access', 'access_level', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                 </th>
                 <th width="10%" nowrap="nowrap">
-                    <?php echo JText::_('Xmap_Heading_Html_Stats'); ?><br />
-                    (<?php echo JText::_('Xmap_Heading_Num_Links') . ' / '. JText::_('Xmap_Heading_Num_Hits') . ' / ' . JText::_('Xmap_Heading_Last_Visit'); ?>)
+                    <?php echo Text::_('Xmap_Heading_Html_Stats'); ?><br />
+                    (<?php echo Text::_('Xmap_Heading_Num_Links') . ' / '. Text::_('Xmap_Heading_Num_Hits') . ' / ' . Text::_('Xmap_Heading_Last_Visit'); ?>)
                 </th>
                 <th width="10%" nowrap="nowrap">
-                    <?php echo JText::_('Xmap_Heading_Xml_Stats'); ?><br />
-                    <?php echo JText::_('Xmap_Heading_Num_Links') . '/'. JText::_('Xmap_Heading_Num_Hits') . '/' . JText::_('Xmap_Heading_Last_Visit'); ?>
+                    <?php echo Text::_('Xmap_Heading_Xml_Stats'); ?><br />
+                    <?php echo Text::_('Xmap_Heading_Num_Links') . '/'. Text::_('Xmap_Heading_Num_Hits') . '/' . Text::_('Xmap_Heading_Last_Visit'); ?>
                 </th>
                 <th width="1%" nowrap="nowrap">
-                    <?php echo JHtml::_('grid.sort', 'JGrid_Heading_ID', 'a.id', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                    <?php echo JHTMLHelper::_('grid.sort', 'JGrid_Heading_ID', 'a.id', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                 </th>
             </tr>
         </thead>
@@ -79,32 +79,32 @@ $n = count($this->items);
         <?php
         foreach ($this->items as $i => $item) :
 
-            $now = JFactory::getDate()->toUnix();
+            $now = Factory::getDate()->toUnix();
             if ( !$item->lastvisit_html ) {
-                $htmlDate = JText::_('Date_Never');
+                $htmlDate = Text::_('Date_Never');
             }elseif ( $item->lastvisit_html > ($now-3600)) { // Less than one hour
-                $htmlDate = JText::sprintf('Date_Minutes_Ago',intval(($now-$item->lastvisit_html)/60));
+                $htmlDate = Text::sprintf('Date_Minutes_Ago',intval(($now-$item->lastvisit_html)/60));
             } elseif ( $item->lastvisit_html > ($now-86400)) { // Less than one day
                 $hours = intval (($now-$item->lastvisit_html)/3600 );
-                $htmlDate = JText::sprintf('Date_Hours_Minutes_Ago',$hours,($now-($hours*3600)-$item->lastvisit_html)/60);
+                $htmlDate = Text::sprintf('Date_Hours_Minutes_Ago',$hours,($now-($hours*3600)-$item->lastvisit_html)/60);
             } elseif ( $item->lastvisit_html > ($now-259200)) { // Less than three days
                 $days = intval(($now-$item->lastvisit_html)/86400);
-                $htmlDate = JText::sprintf('Date_Days_Hours_Ago',$days,intval(($now-($days*86400)-$item->lastvisit_html)/3600));
+                $htmlDate = Text::sprintf('Date_Days_Hours_Ago',$days,intval(($now-($days*86400)-$item->lastvisit_html)/3600));
             } else {
                 $date = new JDate($item->lastvisit_html);
                 $htmlDate = $date->Format('%Y-%m-%d %H:%M');
             }
 
             if ( !$item->lastvisit_xml ) {
-                $xmlDate = JText::_('Date_Never');
+                $xmlDate = Text::_('Date_Never');
             } elseif ( $item->lastvisit_xml > ($now-3600)) { // Less than one hour
-                $xmlDate = JText::sprintf('Date_Minutes_Ago',intval(($now-$item->lastvisit_xml)/60));
+                $xmlDate = Text::sprintf('Date_Minutes_Ago',intval(($now-$item->lastvisit_xml)/60));
             } elseif ( $item->lastvisit_xml > ($now-86400)) { // Less than one day
                 $hours = intval (($now-$item->lastvisit_xml)/3600 );
-                $xmlDate = JText::sprintf('Date_Hours_Minutes_Ago',$hours,($now-($hours*3600)-$item->lastvisit_xml)/60);
+                $xmlDate = Text::sprintf('Date_Hours_Minutes_Ago',$hours,($now-($hours*3600)-$item->lastvisit_xml)/60);
             } elseif ( $item->lastvisit_xml > ($now-259200)) { // Less than three days
                 $days = intval(($now-$item->lastvisit_xml)/86400);
-                $xmlDate = JText::sprintf('Date_Days_Hours_Ago',$days,intval(($now-($days*86400)-$item->lastvisit_xml)/3600));
+                $xmlDate = Text::sprintf('Date_Days_Hours_Ago',$days,intval(($now-($days*86400)-$item->lastvisit_xml)/3600));
             } else {
                 $date = new JDate($item->lastvisit_xml);
                 $xmlDate = $date->Format('%Y-%m-%d %H:%M');
@@ -117,7 +117,7 @@ $n = count($this->items);
                         <?php echo $this->escape($item->title); ?></a>
                 </td>
                 <td align="center">
-                    <?php echo JHtml::_('jgrid.published', $item->state, $i, 'sitemaps.'); ?>
+                    <?php echo JHTMLHelper::_('jgrid.published', $item->state, $i, 'sitemaps.'); ?>
                 </td>
                 <td align="center">
                     <?php echo $this->escape($item->access_level); ?>
@@ -140,5 +140,5 @@ $n = count($this->items);
     <input type="hidden" name="boxchecked" value="0" />
     <input type="hidden" name="filter_order" value="<?php echo $this->state->get('list.ordering'); ?>" />
     <input type="hidden" name="filter_order_Dir" value="<?php echo $this->state->get('list.direction'); ?>" />
-    <?php echo JHtml::_('form.token'); ?>
+    <?php echo JHTMLHelper::_('form.token'); ?>
 </form>

@@ -1,9 +1,12 @@
 <?php
 /**
- * @version          $Id$
- * @copyright        Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license          GNU General Public License version 2 or later; see LICENSE.txt
- * @author           Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+                Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 defined('_JEXEC') or die;
 
@@ -12,7 +15,7 @@ use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route as JRoute;
-JLoader::import('components.com_xmap.helpers.html.xmap', JPATH_ADMINISTRATOR);
+
 
 $app = Factory::getApplication();
 $template = $app->getTemplate();
@@ -44,7 +47,7 @@ $xml = $this->form->getXml();
         }
     }
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_xmap&layout=edit&id='.$this->item->id); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_joxmap&layout=edit&id='.$this->item->id); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
     <div class="row-fluid">
         <!-- Begin Content -->
 		<div class="col-md-12" id="config">

@@ -1,21 +1,27 @@
 <?php
 /**
- * @version      $Id$
- * @copyright    Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license      GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 
+namespace JLTRY\Component\JoXmap\Administrator\Model;
 // No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modeladmin');
-use Joomla\CMS\Factory as JFactory; 
+use JLTRY\Component\JoXmap\Administrator\Helper\Xmap;
+use Joomla\CMS\Factory; 
 use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\MVC\Model\AdminModel as JModelAdmin;
-use Joomla\CMS\Table\Table as JTable;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\Registry\Registry as JRegistry;
-
+use Joomla\CMS\Version;
  
 /**
  * Sitemap model.
@@ -23,9 +29,9 @@ use Joomla\Registry\Registry as JRegistry;
  * @package       Xmap
  * @subpackage    com_xmap
  */
-class XmapModelSitemap extends JModelAdmin
+class SiteMapModel extends AdminModel
 {
-    protected $_context = 'com_xmap';
+    protected $_context = 'com_joxmap';
 
     /**
      * Constructor.
@@ -38,7 +44,7 @@ class XmapModelSitemap extends JModelAdmin
         parent::__construct($config);
 
         $this->_item = 'sitemap';
-        $this->_option = 'com_xmap';
+        $this->_option = 'com_joxmap';
     }
 
     /**
@@ -46,31 +52,37 @@ class XmapModelSitemap extends JModelAdmin
      */
     protected function _populateState()
     {
-        $app = JFactory::getApplication('administrator');
+        $app = Factory::getApplication('administrator');
 
         // Load the User state.
-        if (!($pk = (int) $app->getUserState('com_xmap.edit.sitemap.id'))) {
-            $pk = (int) XmapHelper::getInt('id');
+        if (!($pk = (int) $app->getUserState('com_joxmap.edit.sitemap.id'))) {
+            $pk = Factory::getApplication()->input->getInt('id');
         }
         $this->setState('sitemap.id', $pk);
 
         // Load the parameters.
-        $params    = JComponentHelper::getParams('com_xmap');
+        $params    = ComponentHelper::getParams('com_joxmap');
         $this->setState('params', $params);
     }
 
-    /**
-     * Returns a Table object, always creating it.
-     *
-     * @param    type                The table type to instantiate
-     * @param    string              A prefix for the table class name. Optional.
-     * @param    array               Configuration array for model. Optional.
-     * @return   XmapTableSitemap    A database object
-    */
-    public function getTable($type = 'Sitemap', $prefix = 'XmapTable', $config = array())
-    {
-        return JTable::getInstance($type, $prefix, $config);
-    }
+/**
+	 * Returns a reference to the a Table object, always creating it.
+	 *
+	 * @param		type	The table type to instantiate
+	 * @param		string	A prefix for the table class name. Optional.
+	 * @param		array	Configuration array for model. Optional.
+	 * @return		Table	A database object
+	 * @since		1.6
+	 */
+	public function getTable($type = 'Joxmap', $prefix = 'Administrator', $config = array())
+	{
+		/** @var \Joomla\CMS\MVC\Factory\MVCFactory $mvc */
+		$mvc = Factory::getApplication()
+				->bootComponent("com_joxmap")
+				->getMVCFactory();
+		return $mvc->createTable($type, $prefix, $config);
+	}
+
 
     /**
      * Method to get a single record.
@@ -81,42 +93,7 @@ class XmapModelSitemap extends JModelAdmin
      */
     public function getItem($pk = null)
     {
-        // Initialise variables.
-        $pk = (!empty($pk)) ? $pk : (int)$this->getState('sitemap.id');
-        $false = false;
-
-        // Get a row instance.
-        $table = $this->getTable();
-
-        // Attempt to load the row.
-        $return = $table->load($pk);
-
-        // Check for a table object error.
-        if ($return === false && $table->getError()) {
-            $this->setError($table->getError());
-            return $false;
-        }
-
-        // Prime required properties.
-        if (empty($table->id))
-        {
-            // Prepare data for a new record.
-        }
-
-        // Convert to the JObject before adding other data.
-        $value = $table->getProperties(1);
-        if (version_compare(JVERSION, '4.0', 'ge')){
-            $value = ArrayHelper::toObject($value, 'Joomla\CMS\Object\CMSObject');
-        } else {
-            $value = JArrayHelper::toObject($value, 'JObject');
-        }
-
-        // Convert the params field to an array.
-        $registry = new JRegistry;
-        $registry->loadString($table->attribs);
-        $value->attribs = $registry->toArray();
-
-        return $value;
+        return parent::getItem($pk);
     }
 
     /**
@@ -130,7 +107,8 @@ class XmapModelSitemap extends JModelAdmin
     public function getForm($data = array(), $loadData = true)
     {
         // Get the form.
-        $form = $this->loadForm('com_xmap.sitemap', 'sitemap', array('control' => 'jform', 'load_data' => $loadData));
+        $form = $this->loadForm('com_joxmap.sitemap', 'sitemap', array('control' => 'jform', 'load_data' => $loadData));
+
         if (empty($form)) {
             return false;
         }
@@ -147,7 +125,7 @@ class XmapModelSitemap extends JModelAdmin
     protected function loadFormData()
     {
         // Check the session for previously entered form data.
-        $data = JFactory::getApplication()->getUserState('com_xmap.edit.sitemap.data', array());
+        $data = Factory::getApplication()->getUserState('com_joxmap.edit.sitemap.data', array());
 
         if (empty($data)) {
             $data = $this->getItem();
@@ -179,7 +157,7 @@ class XmapModelSitemap extends JModelAdmin
 
         // Bind the data.
         if (!$table->bind($data)) {
-            $this->setError(JText::sprintf('JERROR_TABLE_BIND_FAILED', $table->getError()));
+            $this->setError(Text::sprintf('JERROR_TABLE_BIND_FAILED', $table->getError()));
             return false;
         }
 
@@ -208,25 +186,18 @@ class XmapModelSitemap extends JModelAdmin
 
         if ($table->is_default) {
             $query =  $this->_db->getQuery(true)
-                           ->update($this->_db->quoteName('#__xmap_sitemap'))
+                           ->update($this->_db->quoteName('#__joxmap_sitemap'))
                            ->set($this->_db->quoteName('is_default').' = 0')
                            ->where($this->_db->quoteName('id').' <> '.$table->id);
 
             $this->_db->setQuery($query);
-            if (version_compare(JVERSION, '4.0', 'ge')) {
-               if (!$this->_db->execute()) {
+            if (!$this->_db->execute()) {
                   $this->setError($table->_db->getErrorMsg());
-               }
-            } else {
-                if (!$this->_db->query()) {
-                    $this->setError($table->_db->getErrorMsg());
-                    return false;
-                }
             }
         }
 
         // Clean the cache.
-        $cache = JFactory::getCache('com_xmap');
+        $cache = Factory::getCache('com_joxmap');
         $cache->clean();
 
         $this->setState('sitemap.id', $table->id);
@@ -252,13 +223,13 @@ class XmapModelSitemap extends JModelAdmin
     {
         $table = $this->getTable();
         if ($table->load($id)) {
-            $db = JFactory::getDbo();
+            $db = Factory::getDbo();
             $query = $db->getQuery(true)
-                        ->update($db->quoteName('#__xmap_sitemap'))
+                        ->update($db->quoteName('#__joxmap_sitemap'))
                         ->set($db->quoteName('is_default').' = 0')
                         ->where($db->quoteName('id').' <> '.$table->id);
             $this->_db->setQuery($query);
-            if (version_compare(JVERSION, '4.0', 'ge')) {
+            if (version_compare(Version, '4.0', 'ge')) {
               if (!$this->_db->execute()) {
                   $this->setError($table->_db->getErrorMsg());
               }
@@ -272,7 +243,7 @@ class XmapModelSitemap extends JModelAdmin
             $table->store();
 
             // Clean the cache.
-            $cache = JFactory::getCache('com_xmap');
+            $cache = Factory::getCache('com_joxmap');
             $cache->clean();
             return true;
         }
@@ -289,10 +260,10 @@ class XmapModelSitemap extends JModelAdmin
 
     private function getDefaultSitemapId()
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $query  = $db->getQuery(true);
         $query->select('id');
-        $query->from($db->quoteName('#__xmap_sitemap'));
+        $query->from($db->quoteName('#__joxmap_sitemap'));
         $query->where('is_default=1');
         $db->setQuery($query);
         return $db->loadResult();

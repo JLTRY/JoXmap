@@ -6,25 +6,25 @@
  * @license          GNU General Public License version 2 or later; see LICENSE.txt
  * @author           Guillermo Vargas (guille@vargas.co.cr)
  */
+namespace JLTRY\Component\JoXmap\Site\View\Html;
+
 // No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-jimport('joomla.application.component.view');
-# For compatibility with older versions of Joola 2.5
-if (!class_exists('JViewLegacy')){
-    class JViewLegacy extends JView {
-
-    }
-}
+use JLTRY\Component\JoXmap\Site\Controller\JoXmapHtmlDisplayer;
+use JLTRY\Component\JoXmap\Site\Helper\XmapHelper;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route as JRoute;
 
 /**
- * HTML Site map View class for the Xmap component
+ * XML Sitemap View class for the Xmap component
  *
- * @package         Xmap
- * @subpackage      com_xmap
- * @since           2.0
+ * @package      Xmap
+ * @subpackage   com_xmap
+ * @since        2.0
  */
-class XmapViewHtml extends JViewLegacy
+class HtmlView extends BaseHtmlView
 {
 
     protected $state;
@@ -33,9 +33,9 @@ class XmapViewHtml extends JViewLegacy
     function display($tpl = null)
     {
         // Initialise variables.
-        $this->app = JFactory::getApplication();
-        $this->user = JFactory::getUser();
-        $doc = JFactory::getDocument();
+        $this->app = Factory::getApplication();
+        $this->user = Factory::getUser();
+        $doc = Factory::getDocument();
 
         // Get view related request variables.
         $this->print = XmapHelper::getBool('print');
@@ -45,7 +45,7 @@ class XmapViewHtml extends JViewLegacy
         $this->item = $this->get('Item');
         $this->items = $this->get('Items');
 
-        $this->canEdit = JFactory::getUser()->authorise('core.admin', 'com_xmap');
+        $this->canEdit = Factory::getUser()->authorise('core.admin', 'com_xmap');
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
@@ -63,7 +63,7 @@ class XmapViewHtml extends JViewLegacy
         $params = &$this->state->params;
         $offset = $this->state->get('page.offset');
         if ($params->get('include_css', 0)){
-            $doc->addStyleSheet(JURI::root().'components/com_xmap/assets/css/xmap.css');
+            $doc->addStyleSheet(Uri::root().'components/com_xmap/assets/css/xmap.css');
         }
 
         // If a guest user, they may be able to log in to view the full article
@@ -90,7 +90,7 @@ class XmapViewHtml extends JViewLegacy
 
         // Load the class used to display the sitemap
         $this->loadTemplate('class');
-        $this->displayer = new XmapHtmlDisplayer($params, $this->item);
+        $this->displayer = new JoXmapHtmlDisplayer($params, $this->item);
 
         $this->displayer->setJView($this);
         $this->displayer->canEdit = $this->canEdit;
@@ -107,7 +107,7 @@ class XmapViewHtml extends JViewLegacy
      */
     protected function _prepareDocument()
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         $pathway = $app->getPathway();
         $menus = $app->getMenu();
         $title = null;
@@ -126,7 +126,7 @@ class XmapViewHtml extends JViewLegacy
                         $title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
                     }
                     // set meta description and keywords from menu item's params
-                    $params = new JRegistry();
+                    $params = new Registry();
                     $params->loadString($menu->getParams());
                     $this->document->setDescription($params->get('menu-meta_description'));
                     $this->document->setMetadata('keywords', $params->get('menu-meta_keywords'));

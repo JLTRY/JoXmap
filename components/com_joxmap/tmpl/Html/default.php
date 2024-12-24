@@ -15,7 +15,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 $params = $this->item->params;
 
 if ($this->displayer->canEdit) {
-    $live_site = JURI::root();
+    $live_site = Uri::root();
     JHTML::_('behavior.framework', true);
     $ajaxurl = "{$live_site}index.php?option=com_xmap&format=json&task=ajax.editElement&action=toggleElement&".JSession::getFormToken().'=1';
 
@@ -55,7 +55,7 @@ if ($this->displayer->canEdit) {
             }
         }";
 
-    $doc = JFactory::getDocument();
+    $doc = Factory::getDocument();
     $doc->addStyleDeclaration ($css);
     $doc->addScriptDeclaration ($js);
 }

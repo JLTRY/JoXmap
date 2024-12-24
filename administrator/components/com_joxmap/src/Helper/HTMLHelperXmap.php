@@ -6,14 +6,14 @@
  * @author      Guillermo Vargas (guille@vargas.co.cr)
  */
 
+namespace JLTRY\Component\JoXmap\Administrator\Helper;
 // no direct access
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Table\Table as JTable; 	 
-use Joomla\CMS\HTML\HTMLHelper as JHTML;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JTable::addIncludePath( JPATH_COMPONENT . '/tables' );
-JHTML::addIncludePath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_xmap' . DS . 'helpers' .DS . 'html');
+
 
 /**
  * @package       Xmap
@@ -31,9 +31,9 @@ abstract class HTMLHelperXmap
     {
         // Array of options
         for ($i=0.1; $i<=1;$i+=0.1) {
-            $options[] = JHTML::_('select.option',$i,$i);;
+            $options[] = HTMLHelper::_('select.option',$i,$i);;
         }
-        return JHtml::_('select.genericlist', $options, $name, null, 'value', 'text', $value, $name.$j);
+        return HTMLHelper::_('select.genericlist', $options, $name, null, 'value', 'text', $value, $name.$j);
     }
 
     /**
@@ -44,21 +44,14 @@ abstract class HTMLHelperXmap
     public static function changefrequency($name, $value = 'weekly', $j)
     {
         // Array of options
-        $options[] = JHTML::_('select.option','hourly','hourly');
-        $options[] = JHTML::_('select.option','daily','daily');
-        $options[] = JHTML::_('select.option','weekly','weekly');
-        $options[] = JHTML::_('select.option','monthly','monthly');
-        $options[] = JHTML::_('select.option','yearly','yearly');
-        $options[] = JHTML::_('select.option','never','never');
-        return JHtml::_('select.genericlist', $options, $name, null, 'value', 'text', $value, $name.$j);
+        $options[] = HTMLHelper::_('select.option','hourly','hourly');
+        $options[] = HTMLHelper::_('select.option','daily','daily');
+        $options[] = HTMLHelper::_('select.option','weekly','weekly');
+        $options[] = HTMLHelper::_('select.option','monthly','monthly');
+        $options[] = HTMLHelper::_('select.option','yearly','yearly');
+        $options[] = HTMLHelper::_('select.option','never','never');
+        return HTMLHelper::_('select.genericlist', $options, $name, null, 'value', 'text', $value, $name.$j);
     }
+
 }
 
-
-if (!JHTML::isRegistered('xmap.priorities')) {
-    JHTML::register('xmap.priorities', ['HTMLHelperXmap', 'priorities']);
-}
-
-if (!JHTML::isRegistered('xmap.changefrequency')) {
-    JHTML::register('xmap.changefrequency', ['HTMLHelperXmap', 'priorities']);
-}

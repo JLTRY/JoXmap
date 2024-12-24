@@ -6,7 +6,7 @@
  * @author        Guillermo Vargas (guille@vargas.co.cr)
  */
 defined( '_JEXEC' ) or die( 'Restricted access' );
-use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Factory;
 /**
  * Content Component Route Helper
  *
@@ -94,7 +94,7 @@ function XmapBuildRoute(&$query)
     $segments = array();
 
     // get a menu item based on Itemid or currently active
-    $app = JFactory::getApplication();
+    $app = Factory::getApplication();
     $menu = $app->getMenu();
 
     if (empty($query['Itemid'])) {
@@ -168,7 +168,7 @@ function XmapParseRoute($segments)
     $vars = array();
 
     //G et the active menu item.
-    $app  = JFactory::getApplication();
+    $app  = Factory::getApplication();
     $menu = $app->getMenu();
     $item = $menu->getActive();
 

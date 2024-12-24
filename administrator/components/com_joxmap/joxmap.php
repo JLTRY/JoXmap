@@ -1,37 +1,26 @@
 <?php
 /**
- * @version       $Id$
- * @copyright     Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license       GNU General Public License version 2 or later; see LICENSE.txt
- * @author        Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Table\Table as JTable;
-use Joomla\CMS\Form\Form as JForm;
-use Joomla\CMS\MVC\Controller\AdminController as JController;
-use Joomla\CMS\Factory as JFactory;
- 
-JTable::addIncludePath( JPATH_COMPONENT.'/tables' );
+use Joomla\CMS\Factory;
 
-jimport('joomla.form.form');
-JForm::addFieldPath( JPATH_COMPONENT.'/models/fields' );
+defined('_JEXEC') or die('Restricted access');
 
-// Register helper class
-JLoader::register('XmapHelper', dirname(__FILE__) . '/helpers/xmap.php');
+// Execute the requested task
+$mvc = Factory::getApplication()
+    ->bootComponent("com_joxmap")
+    ->getMVCFactory();
 
-// Include dependancies
-jimport('joomla.application.component.controller');
-
-# For compatibility with older versions of Joola 2.5
-if (!class_exists('JControllerLegacy')){
-    class JControllerLegacy extends JController {
-
-    }
-}
-
-$controller = JControllerLegacy::getInstance('Xmap');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller = $mvc->createController('SiteMaps');
+$controller->execute(Factory::getApplication()->getInput()->get('task'));
 $controller->redirect();

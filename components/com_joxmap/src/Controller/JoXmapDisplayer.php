@@ -7,14 +7,19 @@
 */
 
 // No direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Date\Date as JDate;
-use Joomla\CMS\User\UserHelper as JUserHelper;
-use Joomla\CMS\Uri\Uri as JURI;
-use Joomla\Registry\Registry as JRegistry;
+namespace JLTRY\Component\JoXmap\Site\Controller;
 
-class XmapDisplayer {
+defined( '_JEXEC' ) or die( 'Restricted access' );
+
+use JLTRY\Component\JoXmap\Site\Helper\XmapHelper;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Date\Date ;
+use Joomla\CMS\User\UserHelper;
+use Joomla\CMS\Uri\Uri ;
+use Joomla\Registry\Registry;
+
+class JoXmapDisplayer extends BaseController {
 
     /**
      *
@@ -45,11 +50,9 @@ class XmapDisplayer {
 
     function __construct($config,$sitemap)
     {
-        jimport('joomla.utilities.date');
-        jimport('joomla.user.helper');
-        $user = JFactory::getUser();
-        $groups = array_keys(JUserHelper::getUserGroups($user->get('id')));
-        $date = new JDate();
+        $user = Factory::getUser();
+        $groups = array_keys(UserHelper::getUserGroups($user->get('id')));
+        $date = new Date();
 
         $this->userLevels    = (array)$user->getAuthorisedViewLevels();
         // Deprecated: should use userLevels from now on
@@ -71,7 +74,7 @@ class XmapDisplayer {
     {
         foreach ($this->jview->items as $menutype => &$items) {
 
-            $node = new stdclass();
+            $node = new \stdclass();
 
             $node->uid = "menu-".$menutype;
             $node->menutype = $menutype;
@@ -100,13 +103,13 @@ class XmapDisplayer {
 
     public function getMenuTitle($menutype,$module='mod_menu')
     {
-        $app = JFactory::getApplication();
-        $db = JFactory::getDbo();
+        $app = Factory::getApplication();
+        $db = Factory::getDbo();
         $title = $extra = '';
 
         // Filter by language
         if ($app->getLanguageFilter()) {
-            $extra = ' AND language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')';
+            $extra = ' AND language in ('.$db->quote(Factory::getLanguage()->getTag()).','.$db->quote('*').')';
         }
 
         $db->setQuery(
@@ -140,7 +143,7 @@ class XmapDisplayer {
         foreach ( $items as $i => $item ) {                   // Add each menu entry to the root tree.
             $excludeExternal = false;
 
-            $node = new stdclass;
+            $node = new \stdclass;
 
             $node->id           = $item->id;
             $node->uid          = $item->uid;
@@ -163,7 +166,7 @@ class XmapDisplayer {
 
             if ($node->home == 1) {
                 // Correct the URL for the home page.
-                $node->link = JURI::base();
+                $node->link = Uri::base();
             }
             switch ($item->type)
             {
@@ -226,7 +229,7 @@ class XmapDisplayer {
         static $_excluded_items;
         if (!isset($_excluded_items)) {
             $_excluded_items = array();
-            $registry = new JRegistry('_default');
+            $registry = new Registry('_default');
             $registry->loadString($this->sitemap->excluded_items);
             $_excluded_items = $registry->toArray();
         }

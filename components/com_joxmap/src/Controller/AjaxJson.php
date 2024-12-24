@@ -27,9 +27,9 @@ class XmapControllerAjax extends JControllerLegacy
 
         jimport('joomla.utilities.date');
         jimport('joomla.user.helper');
-        $user = JFactory::getUser();
-        $groups = array_keys(JUserHelper::getUserGroups($user->get('id')));
-        $result = new JRegistry('_default');
+        $user = Factory::getUser();
+        $groups = array_keys(UserHelper::getUserGroups($user->get('id')));
+        $result = new Registry('_default');
         $sitemapId = XmapHelper::getInt('id');
 
         if (!$user->authorise('core.edit', 'com_xmap.sitemap.'.$sitemapId)) {

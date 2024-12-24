@@ -8,13 +8,11 @@
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-// Include dependencies
-jimport('joomla.application.component.controller');
-use Joomla\CMS\MVC\Controller\BaseController as JControllerLegacy;
+// Execute the requested task
+$mvc = Factory::getApplication()
+    ->bootComponent("com_joxmap")
+    ->getMVCFactory();
 
-require_once(JPATH_COMPONENT.'/displayer.php');
-require_once(JPATH_COMPONENT.'/helpers/xmap.php');
-
-$controller = JControllerLegacy::getInstance('Xmap');
-$controller->execute(XmapHelper::getVar('task'));
+$controller = $mvc->createController('SiteMap');
+$controller->execute(Factory::getApplication()->getInput()->get('task'));
 $controller->redirect();

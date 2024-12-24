@@ -8,11 +8,13 @@
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
-use Joomla\CMS\Uri\Uri as JURI;
+use JLTRY\Component\JoXmap\Site\Helper\XmapHelper;
+use Joomla\CMS\Uri\Uri ;
+
 // Create shortcut to parameters.
 $params = $this->item->params;
 
-$live_site = substr_replace(JURI::root(), "", -1, 1);
+$live_site = substr_replace(Uri::root(), "", -1, 1);
 
 header('Content-type: text/xml; charset=utf-8');
 

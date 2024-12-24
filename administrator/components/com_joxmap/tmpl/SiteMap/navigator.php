@@ -1,16 +1,19 @@
 <?php
 /**
- * @version             $Id$
- * @copyright        Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license             GNU General Public License version 2 or later; see LICENSE.txt
- * @author              Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+                Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
 
 defined('_JEXEC') or die;
 
 $name = XmapHelper::getCmd('e_name');
 
-$doc =& JFactory::getDocument();
+$doc =& Factory::getDocument();
 $doc->addScriptDeclaration('
     var tree;
     var autotext = \'\';
@@ -55,7 +58,7 @@ $doc->addScriptDeclaration('
         text: \'Home\',
         open: true
     });
-    tree.root.load(\'index.php?option=com_xmap&task=navigator-links&sitemap='.$this->item->id.'&e_name='.$name.'&tmpl=component\');
+    tree.root.load(\'index.php?option=com_joxmap&task=navigator-links&sitemap='.$this->item->id.'&e_name='.$name.'&tmpl=component\');
     });
     ');
 ?>
@@ -64,27 +67,27 @@ $doc->addScriptDeclaration('
         <form name="adminForm" action="#" onSubmit="return false;">
         <table width="100%">
             <tr>
-                <td><?php echo JText::_('Xmap_Link_Text'); ?></td>
+                <td><?php echo Text::_('Xmap_Link_Text'); ?></td>
                 <td colspan="3"><input type="text" name="text" id="f_text" value="" size="30" /></td>
             </tr>
             <tr>
-                <td><?php echo JText::_('Xmap_Link_Title'); ?></td>
+                <td><?php echo Text::_('Xmap_Link_Title'); ?></td>
                 <td colspan="3"><input type="text" name="title" id="f_title"  value="" size="30" /></td>
             </tr>
             <tr>
-                <td><?php echo JText::_('Xmap_Link_Link'); ?></td>
+                <td><?php echo Text::_('Xmap_Link_Link'); ?></td>
                 <td colspan="3"><input type="text" name="link" id="f_link"  value="" size="50" /></td>
             </tr>
             <tr>
-                <td><?php echo JText::_('Xmap_Link_Style'); ?></td>
+                <td><?php echo Text::_('Xmap_Link_Style'); ?></td>
                 <td><input type="text" name="cssstyle" id="f_cssstyle"  value="" /></td>
-                <td><?php echo JText::_('Xmap_Link_Class'); ?></td>
+                <td><?php echo Text::_('Xmap_Link_Class'); ?></td>
                 <td><input type="text" name="cssclass" id="f_cssclass"  value="" /></td>
             </tr>
             <tr>
                 <td colspan="4" align="right">
-                    <button name="cssstyle" id="f_cssstyle" onclick="insertLink();"><?php echo JText::_('OK'); ?></button> 
-                    <button name="cssstyle" id="f_cssstyle" onclick="window.parent.SqueezeBox.close();"><?php echo JText::_('Cancel'); ?></button>
+                    <button name="cssstyle" id="f_cssstyle" onclick="insertLink();"><?php echo Text::_('OK'); ?></button> 
+                    <button name="cssstyle" id="f_cssstyle" onclick="window.parent.SqueezeBox.close();"><?php echo Text::_('Cancel'); ?></button>
                 </td>
            </tr>
         </table>

@@ -1,6 +1,6 @@
-VERSION = "4.0.0"
+VERSION = "1.0.0"
 VERSION2 = $(shell echo $(VERSION)|sed 's/ /-/g')
-ZIPFILE = xmap-$(VERSION2).zip
+ZIPFILE = joxmap-$(VERSION2).zip
 PACKAGES = packages
 
 # Only set DATE if you need to force the date.  
@@ -26,7 +26,8 @@ links:
 	rm xmap_component/admin xmap_component/front
 	ln -srf administrator/components/com_xmap xmap_component/admin
 	ln -srf components/com_xmap xmap_component/front
-    
+	ln -srf plugins/xmap xmap_plugin
+
 %.zip:
 	@echo "-------------------------------------------------------"
 	@echo "Creating zip file for: $*"
@@ -40,26 +41,4 @@ $(ZIPFILE): $(ZIPS)
 	@(cd $(PACKAGES); zip -r ../$@ * $(ZIPIGNORES))
 	@echo "-------------------------------------------------------"
 	@echo "Finished creating package $(ZIPFILE)."
-
-
-upload:
-	@echo "-------------------------------------------------------"
-	@echo "Copying new package $(ZIPFILE) to jmcameron.net"
-	@scp $(ZIPFILE) jmcameron:/home/jmcameron/webapps/jmcameron/xmap/downloads/
-	@echo
-
-updateweb:
-	@echo "Updating updates on jmcameron.net..."
-	@ssh jmcameron.net "cd webapps/jmcameron/xmap/updates; git pull"
-
-
-clean:
-	@find . -name '*~' -exec rm {} \;
-	@rm -f _tests.pdf
-
-veryclean: clean
-	@rm -f $(ZIPS) packages/*.zip
-	@rm -f $(ZIPFILE).zip
-	@rm -rf test/coverage_db
-	@rm -rf test/coverage_result
 

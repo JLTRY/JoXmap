@@ -1,16 +1,19 @@
 <?php
 /**
- * @version       $Id$
- * @copyright     Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license       GNU General Public License version 2 or later; see LICENSE.txt
- * @author        Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+
+namespace JLTRY\Component\JoXmap\Administrator\Model;
 // no direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.modellist');
-jimport('joomla.database.query');
-use Joomla\CMS\MVC\Model\ListModel as JModelList;
+use JLTRY\Component\JoXmap\Administrator\Helper\Xmap;
+use Joomla\CMS\MVC\Model\ListModel;
 /**
  * Sitemaps Model Class
  *
@@ -18,7 +21,7 @@ use Joomla\CMS\MVC\Model\ListModel as JModelList;
  * @subpackage      com_xmap
  * @since           2.0
  */
-class XmapModelSitemaps extends JModelList
+class SiteMapsModel extends ListModel
 {
     /**
      * Constructor.
@@ -61,7 +64,7 @@ class XmapModelSitemaps extends JModelList
     protected function populateState($ordering = null, $direction = null)
     {
         // Adjust the context to support modal layouts.
-        if ($layout = XmapHelper::getVar('layout')) {
+        if ($layout = Xmap::getVar('layout')) {
             $this->context .= '.'.$layout;
         }
 
@@ -116,7 +119,7 @@ class XmapModelSitemaps extends JModelList
                           'list.select',
                           'a.*')
         );
-        $query->from('#__xmap_sitemap AS a');
+        $query->from('#__joxmap_sitemap AS a');
 
         // Join over the asset groups.
         $query->select('ag.title AS access_level');
@@ -159,7 +162,7 @@ class XmapModelSitemaps extends JModelList
         $query = $db->getQuery(true);
         $query->select('e.*');
         $query->from($db->quoteName('#__extensions'). 'AS e');
-        $query->join('INNER', '#__extensions AS p ON e.element=p.element and p.enabled=0 and p.type=\'plugin\' and p.folder=\'xmap\'');
+        $query->join('INNER', '#__extensions AS p ON e.element=p.element and p.enabled=0 and p.type=\'plugin\' and p.folder=\'joxmap\'');
         $query->where('e.type=\'component\' and e.enabled=1');
 
         $db->setQuery($query);
@@ -171,7 +174,7 @@ class XmapModelSitemaps extends JModelList
                 $sep = ', ';
             }
 
-            return JText::sprintf('XMAP_MESSAGE_EXTENSIONS_DISABLED',$extensionsNameList);
+            return Text::sprintf('XMAP_MESSAGE_EXTENSIONS_DISABLED',$extensionsNameList);
         } else {
             return "";
         }

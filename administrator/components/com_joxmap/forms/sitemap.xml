@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id$ -->
 <form  name="adminForm" class="form-validate">
-    <fieldset addpath="administrator/components/com_xmap/elements"
+    <fieldset addpath="administrator/components/com_joxmap/src/Field"
               name="general" label="XMAP_FIELDSET_GENERAL">
         <field
             id="id"
@@ -72,7 +72,7 @@
                 JUNPUBLISHED</option>
         </field>
 
-        <field
+        <!--<field
             id="created"
             name="created"
             type="calendar"
@@ -81,7 +81,11 @@
             class="inputbox"
             labelclass="control-label"
             size="16"
-            format="%Y-%m-%d %H-%M-%S" />
+            default="NOW"
+            showtime="false"
+            filter="user_utc"
+            format="%Y-%m-%d"
+         />-->
 
         <field
             id="access"
@@ -102,6 +106,7 @@
             class="readonly"
             labelclass="control-label"
             size="6"
+            default="0"
             readonly="true"
             filter="unset"/>
 
@@ -114,6 +119,7 @@
             class="readonly"
             labelclass="control-label"
             size="6"
+            default="0"
             readonly="true"
             filter="unset"/>
 
@@ -127,6 +133,7 @@
             labelclass="control-label"
             size="6"
             readonly="true"
+            default="0"
             filter="unset"/>
 
         <field
@@ -139,6 +146,7 @@
             labelclass="control-label"
             size="6"
             readonly="true"
+            default="0"
             filter="unset"/>
     </fieldset>
     <fieldset name="menus"  label="XMAP_FIELDSET_MENUS">
@@ -146,6 +154,7 @@
             id="selections"
             name="selections"
             type="xmapmenus"
+            addfieldprefix="JLTRY\Component\JoXmap\Administrator\Field"
             label=""
             description="XMAP_MENUASSIGMENT_DESC"
             class="inputbox"
@@ -173,7 +182,7 @@
             multiple="multiple"
             size="5"/>
     </fields>
-    <fieldset name="options" addpath="administrator/components/com_xmap/elements" label="XMAP_FIELDSET_OPTIONS">
+    <fieldset name="options" addfieldprefix="JLTRY\Component\Joxmap\Administrator\Field" label="XMAP_FIELDSET_OPTIONS">
         <fields name="attribs">
             <field
                 name="showintro"
@@ -310,7 +319,7 @@
                 <option
                     value="1">Yes</option>
             </field>
-	    </fields>
+        </fields>
       </fieldset>
 
         <fieldset name="news" label="XMAP_FIELDSET_NEWS_OPTIONS">

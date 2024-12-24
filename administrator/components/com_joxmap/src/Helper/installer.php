@@ -1,24 +1,28 @@
 <?php
 /**
- * @version             $Id$
- * @copyright			Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
- * @license             GNU General Public License version 2 or later; see LICENSE.txt
- * @author              Guillermo Vargas (guille@vargas.co.cr)
+ * @package     Joomla.Administrator
+ * @subpackage  com_joxmap
+ *
+ * @copyright   Copyright (C) 2024 JL Tryoen. All rights reserved.
+     (com_xmap) Copyright (C) 2007 - 2009 Joomla! Vargas. All rights reserved.
+ * @author      JL Tryoen /  Guillermo Vargas (guille@vargas.co.cr)
+ * @license     GNU General Public License version 3; see LICENSE
  */
+
 // no direct access
 defined('_JEXEC') or die;
 jimport('joomla.installer.installer');
 jimport('joomla.installer.helper');
 
-$lang = JFactory::getLanguage();
+$lang = Factory::getLanguage();
 $lang->load('com_installer', JPATH_ADMINISTRATOR);
 
-class XmapInstaller extends JInstaller
+class JoXmapInstaller extends JInstaller
 {
 
     public function __construct($basepath, $classprefix=null, $adapterfolder=null)
     {
-        JAdapter::__construct(JPATH_ADMINISTRATOR '/components/com_xmap', 'JInstaller');
+        JAdapter::__construct(JPATH_ADMINISTRATOR '/components/com_joxmap', 'JInstaller');
     }
 
     /**
@@ -33,7 +37,7 @@ class XmapInstaller extends JInstaller
         static $instance;
 
         if (!isset($instance)) {
-            $instance = new XmapInstaller('');
+            $instance = new JoXmapInstaller('');
         }
         return $instance;
     }

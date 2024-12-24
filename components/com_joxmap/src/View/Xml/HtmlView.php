@@ -6,13 +6,16 @@
  * @license             GNU General Public License version 2 or later; see LICENSE.txt
  * @author              Guillermo Vargas (guille@vargas.co.cr)
  */
+ 
+namespace JLTRY\Component\JoXmap\Site\View\Xml;
+
 // No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-jimport('joomla.application.component.view');
-
-use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
-use Joomla\CMS\Factory as JFactory;
+use JLTRY\Component\JoXmap\Site\Controller\JoXmapXmlDisplayer;
+use JLTRY\Component\JoXmap\Site\Helper\XmapHelper;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route as JRoute; 	 
 
 /**
@@ -22,7 +25,7 @@ use Joomla\CMS\Router\Route as JRoute;
  * @subpackage   com_xmap
  * @since        2.0
  */
-class XmapViewXml extends JViewLegacy
+class HtmlView extends BaseHtmlView
 {
 
     protected $state;
@@ -33,8 +36,8 @@ class XmapViewXml extends JViewLegacy
     function display($tpl = null)
     {
         // Initialise variables.
-        $app = JFactory::getApplication();
-        $this->user = JFactory::getUser();
+        $app = Factory::getApplication();
+        $this->user = Factory::getUser();
         $isNewsSitemap = XmapHelper::getInt('news',0);
         $this->isImages = XmapHelper::getInt('images',0);
 
@@ -52,7 +55,7 @@ class XmapViewXml extends JViewLegacy
 
         $this->item = $this->get('Item');
         $this->state = $this->get('State');
-        $this->canEdit = JFactory::getUser()->authorise('core.admin', 'com_xmap');
+        $this->canEdit = Factory::getUser()->authorise('core.admin', 'com_xmap');
 
         // For now, news sitemaps are not editable
         $this->canEdit = $this->canEdit && !$isNewsSitemap;
@@ -69,7 +72,7 @@ class XmapViewXml extends JViewLegacy
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
         if (version_compare(JVERSION, '4.0', 'ge')){
-           JFactory::getApplication()->enqueueMessage(implode("\n", $errors), 'warning');
+           Factory::getApplication()->enqueueMessage(implode("\n", $errors), 'warning');
         } else {
             JError::raiseWarning(500, implode("\n", $errors));
         }
@@ -88,14 +91,14 @@ class XmapViewXml extends JViewLegacy
         if (!$this->item->params->get('access-view')) {
             if ($this->user->get('guest')) {
                 // Redirect to login
-                $uri = JFactory::getURI();
+                $uri = Factory::getURI();
                 $app->redirect(
                     'index.php?option=com_users&view=login&return=' . base64_encode($uri),
                     JText::_('Xmap_Error_Login_to_view_sitemap')
                 );
                 return;
             } else {
-                JError::raiseWarning(403, JText::_('Xmap_Error_Not_auth'));
+                JError::raiseWarning(403, Text::_('Xmap_Error_Not_auth'));
                 return;
             }
         }
@@ -107,7 +110,7 @@ class XmapViewXml extends JViewLegacy
 
         // Load the class used to display the sitemap
         $this->loadTemplate('class');
-        $this->displayer = new XmapXmlDisplayer($params, $this->item);
+        $this->displayer = new JoXmapXmlDisplayer($params, $this->item);
 
         $this->displayer->setJView($this);
 
