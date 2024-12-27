@@ -18,6 +18,8 @@ ZIPS = $(NAMES:=.zip)
 
 ZIPIGNORES = -x "*.git*" -x "*.svn*"
 
+PWD = $(pwd)
+
 parts: $(ZIPS)
 
 COMPONENT_SRC = administrator components media joxmap.xml
@@ -34,7 +36,7 @@ joxmap_plugin.zip: $(PLUGIN_SRC)
 	@echo "-------------------------------------------------------"
 	@echo "Creating zip file for: $*"
 	@rm -f $@
-	@(zip -rj $@ $^ $(ZIPIGNORES))
+	@cd $^; zip -r ../../../$@ * $(ZIPIGNORES);cd -;
 
 
 $(ZIPFILE): $(ZIPS)

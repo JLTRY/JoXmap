@@ -33,16 +33,19 @@
     -->
     <namespace path="src/">JLTRY\Component\JoXmap</namespace>
     <files folder="components/com_joxmap">
-    <filename>joxmap.php</filename>
-    <filename>index.html</filename>
-    <folder>tmpl</folder>
-    <folder>src/Controller</folder>
-    <folder>src/Helper</folder>
-    <folder>src/Model</folder>
-    <folder>src/View</folder>
-	<folder>tmpl</folder>
-	<folder>language</folder>
+        <filename>joxmap.php</filename>
+        <filename>index.html</filename>
+        <folder>tmpl</folder>
+        <folder>src/Controller</folder>
+        <folder>src/Helper</folder>
+        <folder>src/Model</folder>
+        <folder>src/View</folder>
+        <folder>tmpl</folder>
     </files>
+    <languages folder="components/com_joxmap/language">
+        <language tag="en-GB">en-GB/en-GB.com_joxmap.ini</language>
+        <language tag="fr-FR">fr-FR/fr-FR.com_joxmap.ini</language>
+    </languages>
     <administration>
         <menu img="media/com_joxmap/images/xmap-favicon.png">COM_JOXMAP_TITLE</menu>
         <files folder="administrator/components/com_joxmap">
@@ -79,6 +82,6 @@
        <folder>images</folder>
     </media>
     <updateservers>
-       <server type="extension" priority="1" name="JoXmap Updates">https://raw.githubusercontent.com/JLTRY/JoXmap/master/pkg_joxmap/update_pkg.xml</server>
+       <server type="extension" priority="1" name="JoXmap Updates">https://raw.githubusercontent.com/JLTRY/JoXmap/master/package/update_pkg.xml</server>
     </updateservers>
 </extension>

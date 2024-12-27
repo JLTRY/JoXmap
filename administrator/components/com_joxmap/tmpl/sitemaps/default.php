@@ -57,24 +57,24 @@ $version = new Version;
                         <input type="checkbox" name="checkall-toggle" value="" title="<?php echo Text::_('JGLOBAL_CHECK_ALL'); ?>" onclick="if (typeof Joomla != 'undefined'){Joomla.checkAll(this)} else {checkAll(this)}" />
                     </th>
                     <th class="title">
-                        <?php echo HTMLHelper::_('grid.sort', 'Xmap_Heading_Sitemap', 'a.title', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 'XMAP_HEADING_SITEMAP', 'a.title', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                     </th>
                     <th width="5%">
-                        <?php echo HTMLHelper::_('grid.sort', 'Xmap_Heading_Published', 'a.state', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 'XMAP_HEADING_PUBLISHED', 'a.state', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                     </th>
                     <th width="10%">
-                        <?php echo HTMLHelper::_('grid.sort',  'Xmap_Heading_Access', 'access_level', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                        <?php echo HTMLHelper::_('grid.sort',  'XMAP_HEADING_ACCESS', 'access_level', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                     </th>
                     <th width="10%" class="nowrap">
                         <?php echo Text::_('Xmap_Heading_Html_Stats'); ?><br />
-                        (<?php echo Text::_('Xmap_Heading_Num_Links') . ' / '. Text::_('Xmap_Heading_Num_Hits') . ' / ' . Text::_('Xmap_Heading_Last_Visit'); ?>)
+                        (<?php echo Text::_('Xmap_Heading_Num_Links') . ' / '. Text::_('XMAP_HEADING_NUM_HITS') . ' / ' . Text::_('Xmap_Heading_Last_Visit'); ?>)
                     </th>
                     <th width="10%" class="nowrap">
                         <?php echo Text::_('Xmap_Heading_Xml_Stats'); ?><br />
-                        <?php echo Text::_('Xmap_Heading_Num_Links') . '/'. Text::_('Xmap_Heading_Num_Hits') . '/' . Text::_('Xmap_Heading_Last_Visit'); ?>
+                        <?php echo Text::_('Xmap_Heading_Num_Links') . '/'. Text::_('XMAP_HEADING_NUM_HITS') . '/' . Text::_('Xmap_Heading_Last_Visit'); ?>
                     </th>
                     <th width="1%" class="nowrap">
-                        <?php echo HTMLHelper::_('grid.sort', 'Xmap_Heading_ID', 'a.id', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 'XMAP_HEADING_ID', 'a.id', $this->state->get('list.direction'), $this->state->get('list.ordering')); ?>
                     </th>
                 </tr>
             </thead>

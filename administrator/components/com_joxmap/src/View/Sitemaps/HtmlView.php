@@ -6,7 +6,7 @@
  * @author      Guillermo Vargas (guille@vargas.co.cr)
  */
 
-namespace JLTRY\Component\JoXmap\Administrator\View\SiteMaps;
+namespace JLTRY\Component\JoXmap\Administrator\View\Sitemaps;
 // no direct access
 defined('_JEXEC') or die;
 
@@ -58,9 +58,6 @@ class HtmlView extends BaseHtmlView
 
         // We don't need toolbar in the modal window.
         if ($this->getLayout() !== 'modal') {
-            if (version_compare($version->getShortVersion(), '3.0.0', '<')) {
-                $tpl = 'legacy';
-            }
             $this->addToolbar();
         }
 

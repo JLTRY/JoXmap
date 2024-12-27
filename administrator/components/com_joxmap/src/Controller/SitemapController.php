@@ -22,7 +22,7 @@ use Joomla\CMS\Factory;
  * @subpackage  com_joxmap
  * @since       2.0
  */
-class SiteMapController extends FormController
+class SitemapController extends FormController
 {
     /**
      * Method override to check if the user can edit an existing record.

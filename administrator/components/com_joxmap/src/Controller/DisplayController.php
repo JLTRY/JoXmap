@@ -13,6 +13,7 @@ namespace JLTRY\Component\JoXmap\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 
@@ -40,11 +41,33 @@ class DisplayController extends BaseController {
  */
     public function display($cachable = false, $urlparams = array()) {
 
-        $input = $this->app->getInput();
+        /*$input = $this->app->getInput();
         // Set the default view (if not specified)
-        $input->set('view', $input->getCmd('view', 'SiteMaps'));
+        $vName = $input->getCmd('view', 'SiteMaps');
+        $document = Factory::getDocument();
+        $vFormat = $document->getType();
+        $input->set('view', $vName);
+        // Get and render the view.
+        if ($view = $this->getView($vName, $vFormat)) {
+            // Get the model for the view.
+            $model = $this->getModel($vName);
 
-        // Call parent to display
-        parent::display($cachable);
+            // Push the model into the view (as default).
+            $view->setModel($model, true);
+            //$view->setLayout($lName);
+
+            // Push document object into the view.
+            $view->document = $document;
+
+            $view->display();
+
+        }
+        */
+		$input = $this->app->getInput();
+		// Set the default view (if not specified)
+		$input->set('view', $input->getCmd('view', 'Sitemaps'));
+
+		// Call parent to display
+		parent::display($cachable);
     }
 }

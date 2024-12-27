@@ -26,7 +26,7 @@ use Joomla\Registry\Registry;
 
 
 /**
- * Xmap Component Sitemap Model
+ * JoXmap Component Sitemap Model
  *
  * @package        Xmap
  * @subpackage     com_xmap

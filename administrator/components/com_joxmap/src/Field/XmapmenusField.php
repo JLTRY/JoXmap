@@ -12,10 +12,10 @@ namespace JLTRY\Component\JoXmap\Administrator\Field;
 defined('_JEXEC') or die;
 
 
-use JLTRY\Component\JoXmap\Administrator\Helper\HtmlHelperXmap;
+use JLTRY\Component\JoXmap\Administrator\Helper\HTMLHelperXmap;
 use Joomla\CMS\Version; 
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper ;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\ListField;
 use Joomla\Registry\Registry;

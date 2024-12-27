@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension type="package" version="1.6">
+<extension type="package" version="4.0" method="upgrade">
     <name>JoXmap Package</name>
     <packagename>joxmap</packagename>
     <version>1.0.0</version>
+    <license>GNU/GPL</license>
     <url>http://www.jltryoen.fr</url>
     <packager>Joomla! Vargas/ JLTryoen</packager>
     <packagerurl>https://github.com/JLTRY/JoXmap</packagerurl>
@@ -11,4 +12,7 @@
         <file type="component" id="com_joxmap">joxmap_component.zip</file>
         <file type="plugin" id="com_content" group="joxmap">joxmap_plugin.zip</file>       
     </files>
+    <updateservers>
+       <server type="extension" priority="1" name="JoXmap Updates">https://raw.githubusercontent.com/JLTRY/JoXMap/master/package/update_pkg.xml</server>
+    </updateservers>
 </extension>
