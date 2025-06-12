@@ -1,5 +1,11 @@
 # com_joxmap
 
+## News
+
+This project will be archived
+
+Please use more accurate https://github.com/svanschu/SchuWeb-Sitemap
+
 ## Credits
 
 This repo was imported from https://github.com/guilleva/Xmap
